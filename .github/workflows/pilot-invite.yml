@@ -1,0 +1,22 @@
+name: Pilot Invite
+
+on:
+  workflow_dispatch:
+
+jobs:
+  invite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install gh CLI
+        run: |
+          sudo apt-get update && sudo apt-get install -y gh
+      - name: Run pilot invite (dry-run)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/pilot_invite.py --org kushin77 --title "Pilot Invitation: Investigation Canvas" --body-file docs/PILOT_INVITE_COPY.md --dry-run
