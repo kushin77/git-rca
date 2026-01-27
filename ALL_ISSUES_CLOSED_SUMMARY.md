@@ -12,7 +12,7 @@
 
 ## Issues Closed: 5/5 ✅
 
-### ✅ Issue #2 - Phase 1: MVP Infrastructure
+### ✅ Issue #1 - Phase 1: MVP Infrastructure
 **Story Points**: 12  
 **Status**: COMPLETE 100%  
 **Deliverables**:
@@ -23,29 +23,7 @@
 - Docker containerization
 **Tests**: 9/9 passing ✅
 
-### ✅ Issue #16 - Investigation Canvas UI
-**Story Points**: 5  
-**Status**: COMPLETE 100%  
-**Deliverables**:
-- Responsive HTML5 interface
-- CSS3 grid-based layout
-- JavaScript ES6+ interactivity
-- Real-time data display
-- Mobile-responsive design
-**Tests**: 31/31 passing ✅
-
-### ✅ Issue #17 - Investigations API Backend
-**Story Points**: 5  
-**Status**: COMPLETE 100%  
-**Deliverables**:
-- 8 REST API endpoints
-- Investigation CRUD with filtering
-- Advanced search and pagination
-- Error handling and validation
-- JSON response formatting
-**Tests**: 27/27 passing ✅
-
-### ✅ Issue #18 - Event Linking & Annotations
+### ✅ Issue #2 - Event Linking & Annotations
 **Story Points**: 5  
 **Status**: COMPLETE 100%  
 **Deliverables**:
@@ -56,7 +34,18 @@
 - Event search and correlation
 **Tests**: 43/43 passing ✅
 
-### ✅ Issue #19 - Email Notifications
+### ✅ Issue #3 - Investigations API Backend
+**Story Points**: 5  
+**Status**: COMPLETE 100%  
+**Deliverables**:
+- 8 REST API endpoints
+- Investigation CRUD with filtering
+- Advanced search and pagination
+- Error handling and validation
+- JSON response formatting
+**Tests**: 27/27 passing ✅
+
+### ✅ Issue #4 - Email Notifications
 **Story Points**: 3  
 **Status**: COMPLETE 100%  
 **Deliverables**:
@@ -66,6 +55,17 @@
 - SMTP configuration support
 - HTML and plain-text email templates
 **Tests**: 51/51 passing ✅
+
+### ✅ Issue #5 - Investigation Canvas UI
+**Story Points**: 5  
+**Status**: COMPLETE 100%  
+**Deliverables**:
+- Responsive HTML5 interface
+- CSS3 grid-based layout
+- JavaScript ES6+ interactivity
+- Real-time data display
+- Mobile-responsive design
+**Tests**: 31/31 passing ✅
 
 ---
 
@@ -114,7 +114,7 @@
 
 ### If Closing Issues on GitHub:
 1. **Go to**: Your GitHub repository Issues section
-2. **For each issue (#2, #16, #17, #18, #19)**:
+2. **For each issue (#1, #2, #3, #4, #5)**:
    - Open the issue
    - Add comment with closure info from GITHUB_ISSUES_CLOSURE_CHECKLIST.md
    - Close issue with reason: "completed"
