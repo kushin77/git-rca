@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Investigation Canvas</title>
+    <link rel="stylesheet" href="/static/css/investigation.css">
+  </head>
+  <body>
+    <div class="canvas">
+      <header class="canvas-header">
+        <h1>Investigation Canvas</h1>
+        <h2 id="title">{{ investigation.title }}</h2>
+        <div class="meta">ID: {{ investigation.id }} &nbsp; • &nbsp; Status: {{ investigation.status }} &nbsp; • &nbsp; Severity: {{ investigation.severity }}</div>
+      </header>
+
+      <main class="canvas-body">
+        <section class="summary">
+          <h3>Summary</h3>
+          <p id="description">{{ investigation.description or 'No description.' }}</p>
+        </section>
+
+        <section class="timeline">
+          <h3>Timeline</h3>
+          <div class="timeline-placeholder">(Timeline visualization placeholder)</div>
+        </section>
+
+        <section class="annotations">
+          <h3>Annotations</h3>
+          <div class="annotations-placeholder">(Threaded notes placeholder)</div>
+        </section>
+
+        <section class="rca">
+          <h3>RCA Conclusion</h3>
+          <div class="rca-placeholder">(Root cause, fix, status)</div>
+        </section>
+      </main>
+
+      <footer class="canvas-footer">
+        <button id="export">Export</button>
+        <button id="share">Share</button>
+      </footer>
+    </div>
+
+    <script src="/static/js/investigation.js"></script>
+  </body>
+</html>

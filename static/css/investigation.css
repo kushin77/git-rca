@@ -1,0 +1,15 @@
+body { font-family: Arial, sans-serif; background: #f6f8fa; color: #24292e; margin: 0; padding: 0; }
+.canvas { max-width: 1000px; margin: 24px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+.canvas-header { padding: 20px; border-bottom: 1px solid #e1e4e8; }
+.canvas-header h1 { margin: 0; font-size: 20px; }
+.canvas-header h2 { margin: 6px 0 0 0; font-size: 16px; color: #0366d6; }
+.canvas-body { display: grid; grid-template-columns: 1fr 320px; gap: 20px; padding: 20px; }
+.summary, .timeline, .rca { background: #fafbfc; padding: 12px; border-radius: 6px; }
+.annotations { background: #fff7e6; padding: 12px; border-radius: 6px; }
+.canvas-footer { padding: 12px 20px; border-top: 1px solid #e1e4e8; text-align: right; }
+button { background: #0366d6; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+button#share { background: #6f42c1; margin-left: 8px; }
+
+@media (max-width: 800px) {
+  .canvas-body { grid-template-columns: 1fr; }
+}
