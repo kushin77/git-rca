@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Investigations List - Git RCA Workspace{% endblock %}
+
+{% block content %}
+<style>
+    .investigations-header {
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .investigations-header h1 {
+        margin: 0 0 15px 0;
+        font-size: 28px;
+    }
+
+    .investigations-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .investigations-table thead {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .investigations-table th,
+    .investigations-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .investigations-table th {
+        background: #f8f9fa;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .investigations-table tr:hover {
+        background: #f9f9f9;
+    }
+
+    .investigations-table a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .investigations-table a:hover {
+        text-decoration: underline;
+    }
+
+    .severity-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .severity-critical {
+        background: #ffcccc;
+        color: #dc3545;
+    }
+
+    .severity-high {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .severity-medium {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .status-open {
+        background: #d4edff;
+        color: #0066cc;
+    }
+
+    .status-closed {
+        background: #d4edda;
+        color: #28a745;
+    }
+
+    .status-in_progress {
+        background: #ffe6cc;
+        color: #ff9800;
+    }
+
+    .toolbar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .toolbar button,
+    .toolbar a {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: #0066cc;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0052a3;
+    }
+
+    .btn-secondary {
+        background: #f8f9fa;
+        color: #333;
+        border: 1px solid #dee2e6;
+    }
+
+    .btn-secondary:hover {
+        background: #e9ecef;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 4px;
+        color: #999;
+    }
+
+    .empty-state p {
+        margin: 10px 0;
+    }
+</style>
+
+<div class="investigations-header">
+    <h1>Investigations</h1>
+    <p>View and manage all RCA investigations.</p>
+</div>
+
+<div class="toolbar">
+    <a href="/investigations/new" class="btn-primary">+ New Investigation</a>
+    <button class="btn-secondary" onclick="filterByStatus('open')">Open</button>
+    <button class="btn-secondary" onclick="filterByStatus('closed')">Closed</button>
+    <button class="btn-secondary" onclick="filterByStatus('')">All</button>
+</div>
+
+{% if investigations %}
+<table class="investigations-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Impact</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for inv in investigations %}
+        <tr>
+            <td>
+                <a href="/investigations/{{ inv.id }}">{{ inv.title }}</a>
+            </td>
+            <td>
+                <span class="severity-badge severity-{{ inv.severity }}">
+                    {{ inv.severity|upper }}
+                </span>
+            </td>
+            <td>
+                <span class="status-badge status-{{ inv.status }}">
+                    {{ inv.status|upper }}
+                </span>
+            </td>
+            <td>{{ inv.impact }}</td>
+            <td>{{ inv.created_at }}</td>
+            <td>
+                <a href="/investigations/{{ inv.id }}">View</a> |
+                <a href="/api/investigations/{{ inv.id }}/export">Export</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No investigations yet.</p>
+    <p><a href="/investigations/new" class="btn-primary">Create the first investigation</a></p>
+</div>
+{% endif %}
+
+<script>
+function filterByStatus(status) {
+    // Will implement filtering in production
+    console.log('Filter by status:', status);
+}
+</script>
+{% endblock %}

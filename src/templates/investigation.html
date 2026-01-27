@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Investigation Canvas - {{ investigation.title }}{% endblock %}
+
+{% block content %}
+<header class="investigation-header">
+    <div>
+        <h1>{{ investigation.title }}</h1>
+        <div class="investigation-meta">
+            <div class="meta-item">
+                <span class="meta-label">ID</span>
+                <span class="meta-value">#{{ investigation.id }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Status</span>
+                <span class="meta-value">
+                    <span class="severity-badge status-{{ investigation.status }}">{{ investigation.status|upper }}</span>
+                </span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Severity</span>
+                <span class="meta-value">
+                    <span class="severity-badge severity-{{ investigation.severity }}">{{ investigation.severity|upper }}</span>
+                </span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Created</span>
+                <span class="meta-value">{{ investigation.created_at }}</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content Grid -->
+<main class="investigation-content">
+    <!-- Left Column: Main Sections -->
+    <div>
+        <!-- Section 1: Incident Summary -->
+        <section class="section">
+            <h2 class="section-title">Incident Summary</h2>
+            <div class="incident-summary">
+                <div class="summary-card">
+                    <label for="title">Incident Title</label>
+                    <input type="text" id="title" name="title" value="{{ investigation.title }}" placeholder="e.g., Payment processing timeout">
+                </div>
+                <div class="summary-card">
+                    <label for="timing">Timing</label>
+                    <input type="text" id="timing" name="timing" value="{{ investigation.timing }}" placeholder="e.g., 2026-01-27 14:30 UTC">
+                </div>
+                <div class="summary-card">
+                    <label for="impact">Business Impact</label>
+                    <input type="text" id="impact" name="impact" value="{{ investigation.impact }}" placeholder="e.g., 5% of transactions failed">
+                </div>
+            </div>
+            <div class="summary-card" style="margin-top: 15px;">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Detailed incident description and context">{{ investigation.description }}</textarea>
+            </div>
+        </section>
+
+        <!-- Section 2: Event Timeline -->
+        <section class="section">
+            <h2 class="section-title">Event Timeline</h2>
+            {% if investigation.events %}
+            <div class="timeline">
+                {% for event in investigation.events %}
+                <div class="timeline-event" style="position: relative;">
+                    <div class="event-timestamp">{{ event.timestamp }}</div>
+                    <span class="event-type {{ event.source }}">{{ event.source }}</span>
+                    <span class="event-type">{{ event.type }}</span>
+                    <div class="event-description">{{ event.description }}</div>
+                    {% if event.metadata %}
+                    <small style="color: #999; display: block; margin-top: 5px;">{{ event.metadata }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No events linked to this investigation yet.</p>
+                <p style="font-size: 12px;">Events from git, CI, and monitoring will appear here.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Section 3: Annotations & Notes -->
+        <section class="section">
+            <h2 class="section-title">Annotations & Notes</h2>
+            {% if investigation.annotations %}
+            <div class="annotations-panel">
+                <div class="annotations-header">
+                    <span>Team Notes</span>
+                    <span class="annotations-count">{{ investigation.annotations|length }}</span>
+                </div>
+                {% for annotation in investigation.annotations %}
+                <div class="annotation">
+                    <div class="annotation-meta">
+                        <span class="annotation-author">{{ annotation.author }}</span>
+                        <span style="color: #999;">{{ annotation.timestamp }}</span>
+                    </div>
+                    <div class="annotation-text">{{ annotation.text }}</div>
+                    <div class="annotation-actions">
+                        <a href="#" class="annotation-action-link" data-action="reply" data-id="{{ annotation.id }}" onclick="toggleReplyForm(event, '{{ annotation.id }}')">Reply</a>
+                        <a href="#" class="annotation-action-link" data-action="edit" data-id="{{ annotation.id }}" onclick="editAnnotation(event, '{{ annotation.id }}')">Edit</a>
+                    </div>
+                    
+                    <!-- Reply form (initially hidden) -->
+                    <div id="reply-form-{{ annotation.id }}" class="annotation-reply-form" style="display: none; margin-top: 10px; margin-left: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                        <textarea class="reply-textarea" placeholder="Write a reply..." style="width: 100%; min-height: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"></textarea>
+                        <div style="margin-top: 8px; display: flex; gap: 8px;">
+                            <button class="btn btn-sm btn-primary" onclick="submitReply('{{ annotation.id }}')">Post Reply</button>
+                            <button class="btn btn-sm btn-secondary" onclick="toggleReplyForm(event, '{{ annotation.id }}')">Cancel</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Display threaded replies -->
+                    {% if annotation.replies %}
+                    <div class="annotation-thread" style="margin-top: 10px; margin-left: 20px; padding-left: 10px; border-left: 2px solid #e0e0e0;">
+                    {% for reply in annotation.replies %}
+                    <div class="annotation-reply" style="margin-top: 10px; padding: 8px; background: #f9f9f9; border-radius: 3px;">
+                        <div class="annotation-meta">
+                            <span class="annotation-author">{{ reply.author }}</span>
+                            <span class="annotation-timestamp">{{ reply.created_at }}</span>
+                        </div>
+                        <div class="annotation-text" style="margin-top: 4px;">{{ reply.text }}</div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No annotations yet.</p>
+                <p style="font-size: 12px;">Add team notes and observations about this incident.</p>
+            </div>
+            {% endif %}
+
+            <!-- Add Annotation Form -->
+            <div class="summary-card" style="margin-top: 15px;">
+                <label for="new-annotation">Add Note</label>
+                <textarea id="new-annotation" name="annotation" placeholder="Add your observation or analysis..." style="margin-bottom: 10px;"></textarea>
+                <button class="btn btn-primary" onclick="addAnnotation()">Post Note</button>
+            </div>
+        </section>
+
+        <!-- Section 4: RCA Conclusion -->
+        <section class="section">
+            <h2 class="section-title">Root Cause Analysis & Fix</h2>
+            <div class="rca-section">
+                <div class="rca-field">
+                    <label for="root-cause">Root Cause</label>
+                    <textarea id="root-cause" name="root_cause" placeholder="What was the underlying cause of this incident?">{{ investigation.root_cause }}</textarea>
+                </div>
+                <div class="rca-field">
+                    <label for="fix">Fix / Resolution</label>
+                    <textarea id="fix" name="fix" placeholder="How was this issue resolved?">{{ investigation.fix }}</textarea>
+                </div>
+                <div class="rca-field">
+                    <label for="prevention">Prevention / Prevention Measures</label>
+                    <textarea id="prevention" name="prevention" placeholder="What measures prevent this in the future?">{{ investigation.prevention }}</textarea>
+                </div>
+                <div class="rca-field">
+                    <label for="status">Conclusion Status</label>
+                    <select id="status" name="status">
+                        <option value="open" {% if investigation.status == 'open' %}selected{% endif %}>Open</option>
+                        <option value="in_progress" {% if investigation.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                        <option value="resolved" {% if investigation.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                        <option value="closed" {% if investigation.status == 'closed' %}selected{% endif %}>Closed</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="investigation-sidebar">
+        <!-- Linked Events -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">Linked Events</div>
+            {% if investigation.events %}
+            <div style="font-size: 13px; color: var(--success); font-weight: 600;">
+                ✓ {{ investigation.events|length }} event{{ 's' if investigation.events|length != 1 else '' }} linked
+            </div>
+            {% else %}
+            <div style="font-size: 13px; color: #999;">
+                No events linked yet
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- People Involved -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">Team</div>
+            {% if investigation.team %}
+            {% for person in investigation.team %}
+            <div class="sidebar-item">
+                <span>👤 {{ person.name }}</span>
+                <small style="display: block; color: #999;">{{ person.role }}</small>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="sidebar-item" style="color: #999;">
+                Add team members
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Investigation Properties -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">Properties</div>
+            <div class="sidebar-item">
+                <label for="area">Area Affected</label>
+                <input type="text" id="area" name="area" style="width: 100%; padding: 5px; border: 1px solid var(--border); border-radius: 3px; font-size: 12px;" value="{{ investigation.area }}" placeholder="e.g., Payment Service">
+            </div>
+            <div class="sidebar-item">
+                <label for="component">Component</label>
+                <input type="text" id="component" name="component" style="width: 100%; padding: 5px; border: 1px solid var(--border); border-radius: 3px; font-size: 12px;" value="{{ investigation.component }}" placeholder="e.g., Checkout API">
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">Quick Links</div>
+            <div class="sidebar-item">
+                <a href="/api/investigations/{{ investigation.id }}/export" class="btn btn-secondary" style="width: 100%; text-align: center; padding: 8px; font-size: 12px;">📥 Export PDF</a>
+            </div>
+            <div class="sidebar-item" style="border-bottom: none; margin-top: 10px;">
+                <a href="/api/investigations/{{ investigation.id }}/share" class="btn btn-secondary" style="width: 100%; text-align: center; padding: 8px; font-size: 12px;">🔗 Share</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Action Buttons -->
+<div class="actions">
+    <button class="btn btn-primary" onclick="saveInvestigation()">💾 Save Investigation</button>
+    <button class="btn btn-success" onclick="markResolved()">✓ Mark as Resolved</button>
+    <a href="/investigations" class="btn btn-secondary">← Back to List</a>
+    <button class="btn btn-secondary" style="margin-left: auto;" onclick="printCanvas()">🖨️ Print</button>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function saveInvestigation() {
+    const investigation = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        root_cause: document.getElementById('root-cause').value,
+        fix: document.getElementById('fix').value,
+        prevention: document.getElementById('prevention').value,
+        status: document.getElementById('status').value,
+        impact: document.getElementById('impact').value,
+        area: document.getElementById('area').value,
+        component: document.getElementById('component').value
+    };
+    
+    fetch(`/api/investigations/{{ investigation.id }}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(investigation)
+    })
+    .then(r => r.json())
+    .then(data => {
+        alert('✓ Investigation saved successfully');
+        console.log('Saved:', data);
+    })
+    .catch(e => alert('Error saving investigation: ' + e));
+}
+
+function addAnnotation() {
+    const text = document.getElementById('new-annotation').value;
+    if (!text.trim()) return;
+    
+    fetch(`/api/investigations/{{ investigation.id }}/annotations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, author: 'Current User' })
+    })
+    .then(r => r.json())
+    .then(data => {
+        document.getElementById('new-annotation').value = '';
+        alert('✓ Note added');
+        location.reload();
+    })
+    .catch(e => alert('Error adding note: ' + e));
+}
+
+function markResolved() {
+    document.getElementById('status').value = 'resolved';
+    saveInvestigation();
+}
+
+function printCanvas() {
+    window.print();
+}
+</script>
+{% endblock %}
