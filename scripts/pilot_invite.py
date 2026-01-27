@@ -24,11 +24,11 @@ def run(cmd: List[str]) -> str:
 
 
 def repo_list_from_org(org: str) -> List[str]:
-    out = run(["gh", "repo", "list", org, "--limit", "1000", "--json", "name,owner,archived"])
+    out = run(["gh", "repo", "list", org, "--limit", "1000", "--json", "name,owner,isArchived"])
     data = json.loads(out)
     repos = []
     for r in data:
-        if not r.get("archived", False):
+        if not r.get("isArchived", False):
             repos.append(f"{r['owner']['login']}/{r['name']}")
     return repos
 
