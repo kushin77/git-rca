@@ -47,9 +47,9 @@ def find_issue_number(repo, title):
 
 
 def list_comments(repo, issue_number):
-    out = run(["gh", "issue", "comment", "list", str(issue_number), "--repo", repo, "--limit", "100", "--json", "body,author"]) 
-    items = json.loads(out)
-    return items
+    out = run(["gh", "issue", "view", str(issue_number), "--repo", repo, "--json", "comments"]) 
+    data = json.loads(out)
+    return data.get("comments", [])
 
 
 def looks_like_rsvp(text):
