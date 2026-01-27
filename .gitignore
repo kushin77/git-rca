@@ -1,3 +1,18 @@
+# Python
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+.env
+
+# Editor
+.DS_Store
+*.swp
+
+# OS
+Thumbs.db
 __pycache__/
 *.pyc
 .venv/

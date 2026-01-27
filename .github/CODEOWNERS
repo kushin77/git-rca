@@ -1,0 +1,7 @@
+# Code owners for repository areas
+# Each entry is a path followed by one or more GitHub usernames
+
+/docs/ @kushin77
+/infra/ @kushin77
+/src/ @kushin77
+/.github/ @kushin77

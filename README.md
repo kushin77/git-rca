@@ -38,3 +38,7 @@ Connector dev notes:
 - A simple dev git event connector is available at `src/connectors/git_connector.py` and documented in `docs/git_connector.md`.
 
 Contact the maintainer: repository owner (please ensure repo access for issue creation).
+
+Landing zone readiness:
+
+See `docs/LANDING_ZONE_CHECKLIST.md` for a pragmatic checklist to prepare this repository for the GCP landing zone mandates and repo hygiene requirements.
