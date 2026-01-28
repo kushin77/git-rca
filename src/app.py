@@ -6,7 +6,7 @@ from src.store import sql_store
 from src.store.investigation_store import InvestigationStore
 from src.services.event_linker import EventLinker
 from src.services.email_notifier import EmailNotifier, NotificationPreferences
-from src.middleware import require_auth, init_auth
+from src.middleware import require_auth, init_auth, init_revocation
 from src.utils.logging import setup_logging, log_request_response, LogContext
 
 
@@ -25,7 +25,9 @@ def create_app(db_path: str = 'investigations.db'):
     setup_logging(app)
 
     # Initialize authentication
+    # Initialize authentication and revocation
     init_auth(app)
+    init_revocation(app)
 
     # Initialize investigation store
     investigation_store = InvestigationStore(db_path=db_path)
@@ -71,6 +73,168 @@ def create_app(db_path: str = 'investigations.db'):
             method=request.method,
         )
         return jsonify({'error': 'Not found'}), 404
+    
+    # ========================================================================
+    # ISSUE #14: Token Revocation & Admin Token Management Endpoints
+    # ========================================================================
+    
+    @app.get('/api/admin/tokens')
+    @require_auth(allowed_roles={'admin'})
+    @log_request_response
+    def get_tokens():
+        """
+        List revoked tokens (admin only).
+        
+        Query parameters:
+        - user_id: Filter by user (optional)
+        - limit: Number of records (default 50, max 500)
+        - offset: Starting offset (default 0)
+        
+        Returns:
+            List of revoked tokens with metadata
+        """
+        try:
+            from src.middleware import get_revocation_manager
+            user_id = request.args.get('user_id')
+            limit = min(int(request.args.get('limit', 50)), 500)
+            offset = int(request.args.get('offset', 0))
+            
+            revocation_manager = get_revocation_manager()
+            records, total = revocation_manager.get_all_revocations(
+                limit=limit,
+                offset=offset,
+                user_id=user_id
+            )
+            
+            # Log admin action
+            context = LogContext(app.logger)
+            context.info(
+                'Admin token list query',
+                admin_id=request.user_id,
+                filter_user=user_id,
+                limit=limit,
+                offset=offset,
+                result_count=len(records),
+                total_count=total,
+            )
+            
+            return jsonify({
+                'tokens': records,
+                'pagination': {
+                    'limit': limit,
+                    'offset': offset,
+                    'total': total,
+                    'returned': len(records),
+                }
+            }), 200
+            
+        except Exception as e:
+            context = LogContext(app.logger)
+            context.error(
+                'Failed to list tokens',
+                admin_id=request.user_id,
+                error=str(e),
+            )
+            return jsonify({'error': 'Failed to list tokens', 'details': str(e)}), 500
+    
+    @app.post('/api/admin/users/<user_id>/revoke-all')
+    @require_auth(allowed_roles={'admin'})
+    @log_request_response
+    def revoke_user_sessions(user_id):
+        """
+        Revoke all sessions for a user (admin only).
+        
+        Use case: User compromised, password changed, etc.
+        
+        Path parameter:
+        - user_id: User whose sessions to revoke
+        
+        Request body:
+        - reason: Reason for revocation (optional)
+        - keep_current: Current token to keep active (optional)
+        
+        Returns:
+            Number of tokens revoked
+        """
+        try:
+            from src.middleware import get_revocation_manager
+            data = request.get_json() or {}
+            reason = data.get('reason', 'admin_action')
+            keep_current = data.get('keep_current')  # Optional token to exclude
+            
+            revocation_manager = get_revocation_manager()
+            revoked_count = revocation_manager.revoke_user_sessions(
+                user_id=user_id,
+                reason=reason,
+                admin_id=request.user_id,
+                keep_current=keep_current
+            )
+            
+            # Log admin action
+            context = LogContext(app.logger)
+            context.warning(
+                'Admin bulk session revocation',
+                admin_id=request.user_id,
+                target_user_id=user_id,
+                reason=reason,
+                revoked_count=revoked_count,
+            )
+            
+            return jsonify({
+                'message': f'Revoked {revoked_count} session(s)',
+                'user_id': user_id,
+                'revoked_count': revoked_count,
+            }), 200
+            
+        except Exception as e:
+            context = LogContext(app.logger)
+            context.error(
+                'Failed to revoke user sessions',
+                admin_id=request.user_id,
+                target_user_id=user_id,
+                error=str(e),
+            )
+            return jsonify({'error': 'Failed to revoke sessions', 'details': str(e)}), 500
+    
+    @app.get('/api/admin/revocation/stats')
+    @require_auth(allowed_roles={'admin'})
+    @log_request_response
+    def get_revocation_stats():
+        """
+        Get revocation system statistics (admin only).
+        
+        Returns:
+            System statistics and metrics
+        """
+        try:
+            from src.middleware import get_revocation_manager
+            revocation_manager = get_revocation_manager()
+            stats = revocation_manager.get_stats()
+            
+            context = LogContext(app.logger)
+            context.debug(
+                'Admin revocation stats query',
+                admin_id=request.user_id,
+            )
+            
+            return jsonify({
+                'stats': stats,
+                'endpoints': {
+                    'logout': '/api/auth/logout',
+                    'list_tokens': '/api/admin/tokens',
+                    'revoke_token': '/api/admin/tokens/<token_hash>/revoke',
+                    'revoke_user': '/api/admin/users/<user_id>/revoke-all',
+                }
+            }), 200
+            
+        except Exception as e:
+            context = LogContext(app.logger)
+            context.error(
+                'Failed to get revocation stats',
+                admin_id=request.user_id,
+                error=str(e),
+            )
+            return jsonify({'error': 'Failed to get stats', 'details': str(e)}), 500
     
     return app
 
@@ -627,6 +791,14 @@ def send_test_notification():
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+# ============================================================================
+# ISSUE #14: Token Revocation & Admin Token Management Endpoints
+# ============================================================================
+
+# NOTE: Admin endpoints are now registered in create_app() function above
+# to ensure they're available on all app instances (including test apps)
 
 
 if __name__ == '__main__':

@@ -112,3 +112,186 @@
 {"timestamp": "2026-01-28T15:47:41.229595+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /test", "request_id": "1769615261229", "method": "GET", "path": "/test", "status_code": 200, "latency_ms": 0.04, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
 {"timestamp": "2026-01-28T15:47:41.331996+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /slow", "request_id": "1769615261231", "method": "GET", "path": "/slow", "status_code": 200, "latency_ms": 100.26, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
 {"timestamp": "2026-01-28T15:47:41.380323+00:00", "level": "INFO", "logger": "src.app", "message": "GET /", "request_id": "1769615261380", "method": "GET", "path": "/", "status_code": 200, "latency_ms": 0.02, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:58:57.503604+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:58:57.522779+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.481863+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.496256+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.499122+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.505028+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.508759+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.512567+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.533078+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.541740+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.544680+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.547485+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.551014+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:14.557751+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.559726+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:14.566621+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.568709+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/tokens", "path": "/api/admin/tokens", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:14.576034+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.577855+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/tokens", "path": "/api/admin/tokens", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:14.583983+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.585861+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/users/some_user/revoke-all", "path": "/api/admin/users/some_user/revoke-all", "method": "POST"}
+{"timestamp": "2026-01-28T15:59:14.591967+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.593808+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/users/test_user_123/revoke-all", "path": "/api/admin/users/test_user_123/revoke-all", "method": "POST"}
+{"timestamp": "2026-01-28T15:59:14.599916+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.601768+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/revocation/stats", "path": "/api/admin/revocation/stats", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:14.607958+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.631764+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.637918+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.644331+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.769691+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.781790+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.796516+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.803671+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.806453+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.809281+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.811387+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:14.818780+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:14.821023+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/revocation/stats", "path": "/api/admin/revocation/stats", "method": "GET"}
+{"timestamp": "2026-01-28T15:59:20.987746+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:20.997754+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:28.371517+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:59:28.381251+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.321133+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.336103+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.339166+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.346662+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.352331+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.361339+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.369671+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.374090+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.377819+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.381287+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.386251+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.391173+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.400640+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/tokens", "path": "/api/admin/tokens", "method": "GET"}
+{"timestamp": "2026-01-28T16:01:09.404237+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.409121+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/tokens", "path": "/api/admin/tokens", "method": "GET"}
+{"timestamp": "2026-01-28T16:01:09.413233+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.436738+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/users/some_user/revoke-all", "path": "/api/admin/users/some_user/revoke-all", "method": "POST"}
+{"timestamp": "2026-01-28T16:01:09.438663+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.441131+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/users/test_user_123/revoke-all", "path": "/api/admin/users/test_user_123/revoke-all", "method": "POST"}
+{"timestamp": "2026-01-28T16:01:09.442404+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.444632+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/revocation/stats", "path": "/api/admin/revocation/stats", "method": "GET"}
+{"timestamp": "2026-01-28T16:01:09.446221+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.470887+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.477936+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.483419+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.611821+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.620045+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.630624+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.637455+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.640765+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.644774+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.651387+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:01:09.653820+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/admin/revocation/stats", "path": "/api/admin/revocation/stats", "method": "GET"}
+{"timestamp": "2026-01-28T16:02:16.730036+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.744531+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.749050+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.755717+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.762540+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.767949+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.775429+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.780287+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.784523+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.789490+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.795099+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.800813+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.805653+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.809240+00:00", "level": "INFO", "logger": "src.app", "message": "Admin token list query", "request_id": "1769616136808", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "filter_user": null, "limit": 10, "offset": 0, "result_count": 10, "total_count": 216}
+{"timestamp": "2026-01-28T16:02:16.809438+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/tokens", "request_id": "1769616136808", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/tokens", "status_code": 200, "latency_ms": 0.47, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:16.810677+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.815619+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.820609+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769616136818", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user_123", "reason": "password_reset", "revoked_count": 1}
+{"timestamp": "2026-01-28T16:02:16.820824+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user_123/revoke-all", "request_id": "1769616136818", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user_123/revoke-all", "status_code": 200, "latency_ms": 1.77, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:16.822270+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.827117+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.853102+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.860974+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.868646+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:16.991447+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.000739+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.027986+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.034736+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.038946+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.043115+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.050414+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:17.054387+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616137054", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.13, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:17.056825+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769616137054", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user", "reason": "test", "revoked_count": 4}
+{"timestamp": "2026-01-28T16:02:17.057250+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user/revoke-all", "request_id": "1769616137054", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user/revoke-all", "status_code": 200, "latency_ms": 2.26, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:17.058897+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616137058", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.4, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:28.472691+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.488777+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.493815+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.500947+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.507725+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.513723+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.521803+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.577561+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.586879+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.593862+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.601180+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.611304+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.624201+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.628309+00:00", "level": "INFO", "logger": "src.app", "message": "Admin token list query", "request_id": "1769616148627", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "filter_user": null, "limit": 10, "offset": 0, "result_count": 10, "total_count": 324}
+{"timestamp": "2026-01-28T16:02:28.628503+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/tokens", "request_id": "1769616148627", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/tokens", "status_code": 200, "latency_ms": 0.49, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:28.629826+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.640926+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.646123+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769616148644", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user_123", "reason": "password_reset", "revoked_count": 1}
+{"timestamp": "2026-01-28T16:02:28.646278+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user_123/revoke-all", "request_id": "1769616148644", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user_123/revoke-all", "status_code": 200, "latency_ms": 1.56, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:28.647638+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.659585+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.688301+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.698347+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.707282+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.852096+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.870690+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.885256+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.892437+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.897057+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.903433+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.912236+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:02:28.917222+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616148916", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.13, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:28.919092+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769616148917", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user", "reason": "test", "revoked_count": 5}
+{"timestamp": "2026-01-28T16:02:28.919223+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user/revoke-all", "request_id": "1769616148917", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user/revoke-all", "status_code": 200, "latency_ms": 1.57, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:02:28.919714+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616148919", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.12, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.185034+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.198007+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.202304+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.208355+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.213956+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.219812+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.237433+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.248269+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.277824+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.283006+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.295121+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.305285+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.319240+00:00", "level": "INFO", "logger": "src.app", "message": "Admin token list query", "request_id": "1769616189317", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "filter_user": null, "limit": 50, "offset": 0, "result_count": 50, "total_count": 431}
+{"timestamp": "2026-01-28T16:03:09.320093+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/tokens", "request_id": "1769616189317", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/tokens", "status_code": 200, "latency_ms": 2.0, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.324542+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.336691+00:00", "level": "INFO", "logger": "src.app", "message": "Admin token list query", "request_id": "1769616189335", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "filter_user": null, "limit": 10, "offset": 0, "result_count": 10, "total_count": 431}
+{"timestamp": "2026-01-28T16:03:09.337065+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/tokens", "request_id": "1769616189335", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/tokens", "status_code": 200, "latency_ms": 1.0, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.339855+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.348621+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.355541+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769616189353", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user_123", "reason": "password_reset", "revoked_count": 1}
+{"timestamp": "2026-01-28T16:03:09.355698+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user_123/revoke-all", "request_id": "1769616189353", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user_123/revoke-all", "status_code": 200, "latency_ms": 1.88, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.357041+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.370958+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616189370", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.37, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.374168+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.403359+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.418839+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.431500+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.573489+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.583165+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.597282+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.607038+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.612081+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.617223+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.624568+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T16:03:09.631444+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616189631", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.22, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.633879+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769616189632", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user", "reason": "test", "revoked_count": 6}
+{"timestamp": "2026-01-28T16:03:09.634014+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user/revoke-all", "request_id": "1769616189632", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user/revoke-all", "status_code": 200, "latency_ms": 1.87, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T16:03:09.634513+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769616189634", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.12, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}

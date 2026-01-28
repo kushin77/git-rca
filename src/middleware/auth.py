@@ -6,6 +6,7 @@ Provides:
 - Role-based access control (RBAC)
 - Decorators for protecting endpoints
 - Token generation/validation for testing
+- Token revocation check via @require_auth
 """
 
 import functools
@@ -17,6 +18,12 @@ from datetime import datetime, timedelta, UTC
 from typing import Dict, Optional, Set
 
 from flask import current_app, request, jsonify
+
+# Import revocation manager (lazy import to avoid circular dependency)
+def _get_revocation_manager():
+    """Lazy load revocation manager to avoid circular imports."""
+    from .revocation import get_revocation_manager
+    return get_revocation_manager()
 
 
 class AuthError(Exception):
@@ -215,6 +222,14 @@ def require_auth(allowed_roles: Optional[Set[str]] = None):
                 validator = get_token_validator()
                 payload = validator.validate_token(token)
                 
+                # Check if token is revoked (Issue #14: Token Revocation)
+                revocation_manager = _get_revocation_manager()
+                if revocation_manager.is_token_revoked(token):
+                    return jsonify({
+                        'error': 'Unauthorized',
+                        'message': 'Token has been revoked'
+                    }), 401
+                
                 # Check role
                 user_role = payload.get('role')
                 if user_role not in allowed_roles:
@@ -227,6 +242,7 @@ def require_auth(allowed_roles: Optional[Set[str]] = None):
                 request.user_id = payload.get('user_id')
                 request.user_role = user_role
                 request.token_payload = payload
+                request.token = token  # Store token for logout endpoint
                 
             except AuthError as e:
                 return jsonify({
@@ -276,3 +292,50 @@ def init_auth(app):
             }), 200
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
+    
+    # Add logout endpoint (Issue #14: Token Revocation)
+    @app.post('/api/auth/logout')
+    @require_auth()
+    def logout():
+        """
+        Logout endpoint - revoke current token.
+        
+        Requires valid Bearer token.
+        Adds token to revocation list immediately.
+        
+        Returns:
+            200: Successfully logged out
+            401: Invalid or missing token
+        """
+        try:
+            token = request.token
+            user_id = request.user_id
+            payload = request.token_payload
+            exp_timestamp = payload.get('exp')
+            
+            if not token or not user_id or not exp_timestamp:
+                return jsonify({
+                    'error': 'Invalid request',
+                    'message': 'Missing token information'
+                }), 400
+            
+            # Add token to revocation list
+            revocation_manager = _get_revocation_manager()
+            revocation_manager.revoke_token(
+                token=token,
+                user_id=user_id,
+                exp_timestamp=exp_timestamp,
+                reason='logout',
+                jti=None  # Could be added to token payload
+            )
+            
+            return jsonify({
+                'message': 'Successfully logged out',
+                'user_id': user_id
+            }), 200
+            
+        except Exception as e:
+            return jsonify({
+                'error': 'Logout failed',
+                'message': str(e)
+            }), 500
