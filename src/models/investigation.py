@@ -76,11 +76,13 @@ class Investigation:
     
     def __init__(
         self,
-        id: str,
-        title: str,
+        id: Optional[str] = None,
+        title: str = '',
         description: str = '',
         status: str = InvestigationStatus.OPEN,
         impact_severity: str = ImpactSeverity.MEDIUM,
+        # Backwards-compatible alias for older code/tests
+        severity: Optional[str] = None,
         detected_at: Optional[str] = None,
         started_at: Optional[str] = None,
         resolved_at: Optional[str] = None,
@@ -133,11 +135,16 @@ class Investigation:
         if len(lessons_learned) > 2000:
             raise ValueError("lessons_learned must be <= 2000 characters")
         
-        self.id = id
+        # Generate id if not provided for convenience in tests and callers
+        self.id = id or str(uuid_lib.uuid4())
         self.title = title
         self.description = description
         self.status = status
-        self.impact_severity = impact_severity
+        # Coerce legacy `severity` -> `impact_severity` if provided
+        if severity:
+            self.impact_severity = severity
+        else:
+            self.impact_severity = impact_severity
         self.detected_at = detected_at or datetime.utcnow().isoformat()
         self.started_at = started_at or datetime.utcnow().isoformat()
         self.resolved_at = resolved_at
@@ -240,6 +247,8 @@ class Investigation:
             'description': self.description,
             'status': self.status,
             'impact_severity': self.impact_severity,
+            # Backwards compatibility
+            'severity': self.severity,
             'detected_at': self.detected_at,
             'started_at': self.started_at,
             'resolved_at': self.resolved_at,
@@ -292,7 +301,8 @@ class Investigation:
         Returns:
             Investigation instance
         """
-        return Investigation(**{k: v for k, v in data.items() if k in [
+        # Accept legacy 'severity' key when present
+        init_kwargs = {k: v for k, v in data.items() if k in [
             'id', 'title', 'description', 'status', 'impact_severity',
             'detected_at', 'started_at', 'resolved_at', 'root_cause',
             'remediation', 'lessons_learned', 'component_affected',
@@ -300,10 +310,19 @@ class Investigation:
             'created_by', 'assigned_to', 'priority', 'created_at',
             'updated_at', 'deleted_at'
         ]})
-    
+        if 'severity' in data and 'impact_severity' not in init_kwargs:
+            init_kwargs['severity'] = data['severity']
+
+        return Investigation(**init_kwargs)
+
     def __repr__(self) -> str:
         """String representation."""
         return f"Investigation(id={self.id}, title={self.title}, status={self.status}, severity={self.impact_severity})"
+
+    @property
+    def severity(self) -> str:
+        """Backward-compatible severity property (returns impact_severity)."""
+        return self.impact_severity
 
 
 class InvestigationEvent:
