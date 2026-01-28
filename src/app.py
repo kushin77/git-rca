@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from typing import List, Dict
+import os
 
 from src.connectors import git_connector, ci_connector
 from src.store import sql_store
@@ -19,7 +20,12 @@ def create_app(db_path: str = 'investigations.db'):
     Returns:
         Configured Flask app instance
     """
-    app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/static')
+    # Get the path to the src directory
+    src_dir = os.path.dirname(os.path.abspath(__file__))
+    app = Flask(__name__, 
+                template_folder=os.path.join(src_dir, 'templates'),
+                static_folder=os.path.join(src_dir, 'static'),
+                static_url_path='/static')
 
     # Initialize structured JSON logging
     setup_logging(app)

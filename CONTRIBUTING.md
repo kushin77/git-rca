@@ -24,10 +24,22 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 pip install -r requirements-dev.txt  # Dev dependencies: pytest, flake8, black, etc.
 
-# Install pre-commit hooks (prevents commits with secrets/venv)
-pre-commit install
-pre-commit run --all-files  # Test hooks on existing files
+# Setup Git hooks and conventions (Recommended)
+./setup-git.sh
+
+# Alternatively, manual install:
+# pre-commit install
+# pre-commit install -t commit-msg
+# pre-commit run --all-files  # Test hooks on existing files
 ```
+
+### Git Conventions
+To maintain a high standard of project management (PMO mastery), all contributions must follow these rules:
+1. **Issue Coupling**: Every commit must reference a GitHub issue ID (e.g., `#123`).
+2. **Branch Naming**: Preferably use `feature/#123-description` or `fix/#123-description`.
+3. **Commit Messages**: Use [Conventional Commits](https://www.conventionalcommits.org/).
+
+The `commit-msg` hook will enforce the issue reference check.
 
 ### Running Tests Locally
 

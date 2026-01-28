@@ -1,0 +1,24 @@
+name: Commit Message Lint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages for issue reference
+        run: |
+          git fetch origin $GITHUB_BASE_REF
+          commits=$(git log origin/$GITHUB_BASE_REF..HEAD --format=%s)
+          echo "Checking commits: $commits"
+          if ! echo "$commits" | grep -qE '#[0-9]+'; then
+            echo "❌ Error: At least one commit must reference a GitHub issue (e.g., #123)"
+            exit 1
+          fi
+          echo "✅ All commits have issue references."
