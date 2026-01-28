@@ -16,7 +16,10 @@ import requests
 
 
 def gh_headers(token):
-    return {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
+    return {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
 
 
 def ensure_label(session, base_url, label, color="ededed", description=""):
@@ -58,7 +61,11 @@ def issue_exists(session, base_url, title):
 
 def create_issue(session, base_url, issue, milestone_number=None):
     url = f"{base_url}/issues"
-    payload = {"title": issue["title"], "body": issue.get("body", ""), "labels": issue.get("labels", [])}
+    payload = {
+        "title": issue["title"],
+        "body": issue.get("body", ""),
+        "labels": issue.get("labels", []),
+    }
     if issue.get("assignees"):
         payload["assignees"] = issue.get("assignees")
     if milestone_number:

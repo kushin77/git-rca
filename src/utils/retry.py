@@ -4,7 +4,9 @@ from typing import Callable, Type, Tuple
 
 
 def retry_on_exception(
-    exceptions: Tuple[Type[BaseException], ...] = (Exception,), max_attempts: int = 3, delay: float = 0.1
+    exceptions: Tuple[Type[BaseException], ...] = (Exception,),
+    max_attempts: int = 3,
+    delay: float = 0.1,
 ) -> Callable:
     """Simple retry decorator for transient operations.
 

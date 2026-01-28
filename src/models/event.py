@@ -29,6 +29,7 @@ import uuid as uuid_lib
 
 class EventSource(str, Enum):
     """Event source enumeration."""
+
     GIT = "git"
     CI = "ci"
     LOGS = "logs"
@@ -39,6 +40,7 @@ class EventSource(str, Enum):
 
 class EventSeverity(str, Enum):
     """Event severity enumeration."""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -48,7 +50,7 @@ class EventSeverity(str, Enum):
 
 class Event:
     """Event domain model supporting multiple signal sources."""
-    
+
     def __init__(
         self,
         timestamp: str,
@@ -67,7 +69,7 @@ class Event:
         deleted_at: Optional[str] = None,
     ):
         """Initialize an Event.
-        
+
         Args:
             timestamp: ISO timestamp of when event occurred
             source: Event source (git, ci, logs, metrics, traces, manual)
@@ -98,99 +100,117 @@ class Event:
         self.metadata = metadata or {}
         self.created_at = created_at or datetime.utcnow().isoformat()
         self.deleted_at = deleted_at
-    
+
     def is_active(self) -> bool:
         """Check if event is active (not soft-deleted).
-        
+
         Returns:
             True if event is active, False if soft-deleted
         """
         return self.deleted_at is None
-    
+
     def link_to_investigation(self, investigation_id: str) -> None:
         """Link this event to an investigation.
-        
+
         Args:
             investigation_id: Investigation ID to link
         """
         if investigation_id not in self.investigation_ids:
             self.investigation_ids.append(investigation_id)
         self.linked_at = datetime.utcnow().isoformat()
-    
+
     def unlink_from_investigation(self, investigation_id: str) -> None:
         """Unlink this event from an investigation.
-        
+
         Args:
             investigation_id: Investigation ID to unlink
         """
         if investigation_id in self.investigation_ids:
             self.investigation_ids.remove(investigation_id)
-    
+
     def add_tag(self, tag: str) -> None:
         """Add a tag to this event.
-        
+
         Args:
             tag: Tag to add
         """
         if tag not in self.tags:
             self.tags.append(tag)
-    
+
     def remove_tag(self, tag: str) -> None:
         """Remove a tag from this event.
-        
+
         Args:
             tag: Tag to remove
         """
         if tag in self.tags:
             self.tags.remove(tag)
-    
+
     def soft_delete(self) -> None:
         """Soft-delete this event."""
         self.deleted_at = datetime.utcnow().isoformat()
-    
+
     def restore(self) -> None:
         """Restore a soft-deleted event."""
         self.deleted_at = None
-    
+
     def to_dict(self) -> dict:
         """Convert event to dictionary.
-        
+
         Returns:
             Dictionary representation of event
         """
         return {
-            'id': self.id,
-            'timestamp': self.timestamp,
-            'source': self.source,
-            'event_type': self.event_type,
-            'severity': self.severity,
-            'data': self.data,
-            'tags': self.tags,
-            'investigation_ids': self.investigation_ids,
-            'source_id': self.source_id,
-            'parsed_at': self.parsed_at,
-            'linked_at': self.linked_at,
-            'metadata': self.metadata,
-            'created_at': self.created_at,
-            'deleted_at': self.deleted_at,
+            "id": self.id,
+            "timestamp": self.timestamp,
+            "source": self.source,
+            "event_type": self.event_type,
+            "severity": self.severity,
+            "data": self.data,
+            "tags": self.tags,
+            "investigation_ids": self.investigation_ids,
+            "source_id": self.source_id,
+            "parsed_at": self.parsed_at,
+            "linked_at": self.linked_at,
+            "metadata": self.metadata,
+            "created_at": self.created_at,
+            "deleted_at": self.deleted_at,
         }
-    
+
     @staticmethod
-    def from_dict(data: dict) -> 'Event':
+    def from_dict(data: dict) -> "Event":
         """Create Event from dictionary.
-        
+
         Args:
             data: Dictionary with event fields
-            
+
         Returns:
             Event instance
         """
-        return Event(**{k: v for k, v in data.items() if k in [
-            'id', 'timestamp', 'source', 'event_type', 'severity',
-            'data', 'tags', 'investigation_ids', 'source_id',
-            'parsed_at', 'linked_at', 'metadata', 'created_at', 'deleted_at'
-        ]})
-    
+        return Event(
+            **{
+                k: v
+                for k, v in data.items()
+                if k
+                in [
+                    "id",
+                    "timestamp",
+                    "source",
+                    "event_type",
+                    "severity",
+                    "data",
+                    "tags",
+                    "investigation_ids",
+                    "source_id",
+                    "parsed_at",
+                    "linked_at",
+                    "metadata",
+                    "created_at",
+                    "deleted_at",
+                ]
+            }
+        )
+
     def __repr__(self) -> str:
         """String representation."""
         return f"Event(id={self.id}, source={self.source}, type={self.event_type}, severity={self.severity})"
@@ -230,7 +250,7 @@ class EventStore:
 
 class EventLinkerResult:
     """Result of linking an event to investigations."""
-    
+
     def __init__(
         self,
         event_id: str,
@@ -239,7 +259,7 @@ class EventLinkerResult:
         linking_strategy: str,  # 'timestamp', 'component', 'tags', etc.
     ):
         """Initialize an EventLinkerResult.
-        
+
         Args:
             event_id: Event that was linked
             investigation_ids: Linked investigation IDs
@@ -251,13 +271,13 @@ class EventLinkerResult:
         self.confidence_scores = confidence_scores
         self.linking_strategy = linking_strategy
         self.created_at = datetime.utcnow().isoformat()
-    
+
     def to_dict(self) -> dict:
         """Convert to dictionary."""
         return {
-            'event_id': self.event_id,
-            'investigation_ids': self.investigation_ids,
-            'confidence_scores': self.confidence_scores,
-            'linking_strategy': self.linking_strategy,
-            'created_at': self.created_at,
+            "event_id": self.event_id,
+            "investigation_ids": self.investigation_ids,
+            "confidence_scores": self.confidence_scores,
+            "linking_strategy": self.linking_strategy,
+            "created_at": self.created_at,
         }

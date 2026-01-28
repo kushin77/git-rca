@@ -16,7 +16,7 @@ REPO_CONFIG = {
     "name": "git-rca",
     "description": "Root Cause Analysis Platform - Complete RCA Investigation System",
     "homepage": "https://github.com/BestGaaS220/git-rca",
-    "visibility": "public"
+    "visibility": "public",
 }
 
 # Issue #2: Phase 1 MVP Infrastructure
@@ -64,7 +64,7 @@ Test Results: 9/9 PASSING ✅
 - Docker/docker-compose configuration
 - Production-ready code
 
-All acceptance criteria satisfied. Phase 1 MVP is production-ready."""
+All acceptance criteria satisfied. Phase 1 MVP is production-ready.""",
 }
 
 # Issue #16: Investigation Canvas UI
@@ -112,7 +112,7 @@ Test Results: 31/31 PASSING ✅
 - static/app.js - Client-side logic
 - Comprehensive UI test suites
 
-All acceptance criteria satisfied. Ready for production deployment."""
+All acceptance criteria satisfied. Ready for production deployment.""",
 }
 
 # Issue #17: Investigations API Backend
@@ -171,7 +171,7 @@ Test Results: 27/27 PASSING ✅
 - JSON response formatting
 - Error handling framework
 
-All acceptance criteria satisfied. Ready for production deployment."""
+All acceptance criteria satisfied. Ready for production deployment.""",
 }
 
 # Issue #18: Event Linking & Annotations
@@ -191,7 +191,14 @@ ISSUE_18 = {
 - [x] Production deployment ready
 
 ## Story Points: 5""",
-    "labels": ["Backend", "Service", "Story-18", "Event-Linking", "Annotations", "Correlation"],
+    "labels": [
+        "Backend",
+        "Service",
+        "Story-18",
+        "Event-Linking",
+        "Annotations",
+        "Correlation",
+    ],
     "closure_comment": """✅ STORY #18 COMPLETE - 100% Delivered
 
 Story Points: 5/5
@@ -232,7 +239,7 @@ Test Results: 43/43 PASSING ✅
 - static/annotations.js - UI components
 - Comprehensive test suites
 
-All acceptance criteria satisfied. Ready for production deployment."""
+All acceptance criteria satisfied. Ready for production deployment.""",
 }
 
 # Issue #19: Email Notifications
@@ -252,7 +259,14 @@ ISSUE_19 = {
 - [x] Production deployment ready
 
 ## Story Points: 3""",
-    "labels": ["Backend", "Service", "Story-19", "Email", "Notifications", "Integration"],
+    "labels": [
+        "Backend",
+        "Service",
+        "Story-19",
+        "Email",
+        "Notifications",
+        "Integration",
+    ],
     "closure_comment": """✅ STORY #19 COMPLETE - 100% Delivered
 
 Story Points: 3/3
@@ -296,7 +310,7 @@ Test Results: 51/51 PASSING ✅
 - Email templates (HTML and plain-text)
 - Comprehensive test suites (51 tests)
 
-All acceptance criteria satisfied. Ready for production deployment."""
+All acceptance criteria satisfied. Ready for production deployment.""",
 }
 
 # All issues for processing
@@ -311,7 +325,7 @@ PROJECT_SUMMARY = {
     "test_pass_rate": "100%",
     "code_lines": "5,500+",
     "documentation_files": 30,
-    "status": "100% COMPLETE - READY FOR PRODUCTION"
+    "status": "100% COMPLETE - READY FOR PRODUCTION",
 }
 
 if __name__ == "__main__":
@@ -329,13 +343,17 @@ if __name__ == "__main__":
     print("  ✅ Issue #18: Event Linking (5 pts, 43 tests)")
     print("  ✅ Issue #19: Email Service (3 pts, 51 tests)")
     print()
-    print(f"Total: {PROJECT_SUMMARY['total_story_points']} story points, {PROJECT_SUMMARY['total_tests']} tests ✅")
+    print(
+        f"Total: {PROJECT_SUMMARY['total_story_points']} story points, {PROJECT_SUMMARY['total_tests']} tests ✅"
+    )
     print()
     print("=" * 80)
     print("STATUS: All materials prepared for GitHub execution")
-    print("NEXT: Use GITHUB_SETUP_AND_CLOSURE_FINAL.md to create repository and close issues")
+    print(
+        "NEXT: Use GITHUB_SETUP_AND_CLOSURE_FINAL.md to create repository and close issues"
+    )
     print("=" * 80)
-    
+
     # Output JSON for programmatic use
     print()
     print("JSON Configuration Available:")

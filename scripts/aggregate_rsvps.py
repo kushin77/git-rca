@@ -8,11 +8,11 @@ appear to contain RSVPs (simple keyword matching). Results are appended to
 
 Run: python3 scripts/aggregate_rsvps.py
 """
+
 import json
 import re
 import subprocess
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "docs" / "PILOT_INVITE_RESULTS.md"
@@ -38,23 +38,51 @@ def parse_results():
 
 
 def find_issue_number(repo, title):
-    out = run(["gh", "issue", "list", "--repo", repo, "--state", "open", "--limit", "100", "--json", "number,title"]) 
+    out = run(
+        [
+            "gh",
+            "issue",
+            "list",
+            "--repo",
+            repo,
+            "--state",
+            "open",
+            "--limit",
+            "100",
+            "--json",
+            "number,title",
+        ]
+    )
     items = json.loads(out)
     for it in items:
-        if it.get("title","").strip().lower() == title.strip().lower():
+        if it.get("title", "").strip().lower() == title.strip().lower():
             return it.get("number")
     return None
 
 
 def list_comments(repo, issue_number):
-    out = run(["gh", "issue", "view", str(issue_number), "--repo", repo, "--json", "comments"]) 
+    out = run(
+        ["gh", "issue", "view", str(issue_number), "--repo", repo, "--json", "comments"]
+    )
     data = json.loads(out)
     return data.get("comments", [])
 
 
 def looks_like_rsvp(text):
     txt = text.lower()
-    triggers = ["rsvp", "i'm in", "im in", "count me in", "i'm interested", "yes", "i can", "available", "i'd join", "i will join", "i'll join"]
+    triggers = [
+        "rsvp",
+        "i'm in",
+        "im in",
+        "count me in",
+        "i'm interested",
+        "yes",
+        "i can",
+        "available",
+        "i'd join",
+        "i will join",
+        "i'll join",
+    ]
     for t in triggers:
         if t in txt:
             return True
@@ -75,10 +103,17 @@ def main():
                 continue
             comments = list_comments(repo, issue_num)
             for c in comments:
-                body = c.get("body","")
-                author = c.get("author", {}).get("login","")
+                body = c.get("body", "")
+                author = c.get("author", {}).get("login", "")
                 if looks_like_rsvp(body):
-                    rows.append((repo, f"https://github.com/{repo}/issues/{issue_num}", author, body.strip()))
+                    rows.append(
+                        (
+                            repo,
+                            f"https://github.com/{repo}/issues/{issue_num}",
+                            author,
+                            body.strip(),
+                        )
+                    )
         except Exception as e:
             print(f"{repo}: error {e}")
 
@@ -89,7 +124,9 @@ def main():
             f.write("| Repo | Issue URL | Respondent | Comment |\n")
             f.write("|------|-----------|------------|---------|\n")
             for r in rows:
-                f.write(f"| {r[0]} | {r[1]} | {r[2]} | {r[3].replace('|','\\|')} |\n")
+                # Replace pipe characters to avoid breaking markdown table
+                comment_safe = r[3].replace("|", "\\|")
+                f.write(f"| {r[0]} | {r[1]} | {r[2]} | {comment_safe} |\n")
         print(f"Appended {len(rows)} RSVP(s) to {RSVP}")
     else:
         print("No RSVP-like comments found.")

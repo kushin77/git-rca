@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 from datetime import datetime
 
-DB_PATH: Path = Path(__file__).resolve().parent.parent / 'data' / 'dev_events.db'
+DB_PATH: Path = Path(__file__).resolve().parent.parent / "data" / "dev_events.db"
 DB_PATH.parent.mkdir(exist_ok=True)
 
 
@@ -17,16 +17,14 @@ def _get_conn():
 def init_db():
     conn = _get_conn()
     cur = conn.cursor()
-    cur.execute(
-        '''
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             source TEXT NOT NULL,
             payload TEXT NOT NULL,
             inserted_at TEXT NOT NULL
         )
-        '''
-    )
+        """)
     conn.commit()
     conn.close()
 
@@ -40,8 +38,12 @@ def insert_event(source: str, payload: Dict[str, Any]) -> None:
     conn = _get_conn()
     cur = conn.cursor()
     cur.execute(
-        'INSERT INTO events (source, payload, inserted_at) VALUES (?, ?, ?)',
-        (source, json.dumps(payload, ensure_ascii=False), datetime.utcnow().isoformat()),
+        "INSERT INTO events (source, payload, inserted_at) VALUES (?, ?, ?)",
+        (
+            source,
+            json.dumps(payload, ensure_ascii=False),
+            datetime.utcnow().isoformat(),
+        ),
     )
     conn.commit()
     conn.close()
@@ -52,18 +54,28 @@ def query_events(source: Optional[str] = None, limit: int = 50) -> List[Dict]:
     conn = _get_conn()
     cur = conn.cursor()
     if source:
-        cur.execute('SELECT * FROM events WHERE source = ? ORDER BY id DESC LIMIT ?', (source, limit))
+        cur.execute(
+            "SELECT * FROM events WHERE source = ? ORDER BY id DESC LIMIT ?",
+            (source, limit),
+        )
     else:
-        cur.execute('SELECT * FROM events ORDER BY id DESC LIMIT ?', (limit,))
+        cur.execute("SELECT * FROM events ORDER BY id DESC LIMIT ?", (limit,))
     rows = cur.fetchall()
     conn.close()
     res: List[Dict] = []
     for r in rows:
         try:
-            payload = json.loads(r['payload'])
+            payload = json.loads(r["payload"])
         except Exception:
             payload = {}
-        res.append({'id': r['id'], 'source': r['source'], 'payload': payload, 'inserted_at': r['inserted_at']})
+        res.append(
+            {
+                "id": r["id"],
+                "source": r["source"],
+                "payload": payload,
+                "inserted_at": r["inserted_at"],
+            }
+        )
     return res
 
 

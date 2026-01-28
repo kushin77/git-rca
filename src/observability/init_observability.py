@@ -31,11 +31,14 @@ def init_observability(app):
                 FlaskInstrumentor().instrument_app(app)
                 app.logger.info("Observability: Flask instrumentation enabled")
             except Exception:
-                app.logger.debug("Observability: Flask instrumentation not available or failed")
+                app.logger.debug(
+                    "Observability: Flask instrumentation not available or failed"
+                )
         else:
             app.logger.debug("Observability: OpenTelemetry not installed")
 
         if generate_latest is not None:
+
             @app.route("/metrics")
             def metrics():
                 try:
@@ -44,6 +47,7 @@ def init_observability(app):
                 except Exception:
                     app.logger.exception("Failed to generate Prometheus metrics")
                     return "", 500
+
             app.logger.info("Observability: /metrics endpoint registered")
         else:
             app.logger.debug("Observability: prometheus_client not installed")

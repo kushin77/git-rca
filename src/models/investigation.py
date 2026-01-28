@@ -10,31 +10,31 @@ Attributes (Phase 3a Expanded):
     description (str): Detailed incident description
     status (str): Status: 'open', 'in_progress', 'resolved', 'closed'
     impact_severity (str): Impact: 'critical', 'high', 'medium', 'low'
-    
+
     Timeline:
     detected_at (str): When incident was detected (ISO timestamp)
     started_at (str): When investigation started (ISO timestamp)
     resolved_at (str): When incident was resolved (optional, ISO timestamp)
-    
+
     Analysis:
     root_cause (str): Identified root cause (optional, 2000 char limit)
     remediation (str): Fix implementation plan (optional, 2000 char limit)
     lessons_learned (str): Lessons learned (optional, 2000 char limit)
-    
+
     Component Tracking:
     component_affected (str): Affected component/service name
     service_affected (str): Affected service (e.g., 'production', 'staging')
-    
+
     Relationships:
     tags (List[str]): Searchable tags
     event_ids (List[str]): Linked event IDs
     related_investigation_ids (List[str]): Related investigations
-    
+
     Ownership:
     created_by (str): User ID who created investigation
     assigned_to (str): User ID investigation is assigned to (optional)
     priority (str): 'p0', 'p1', 'p2', 'p3'
-    
+
     Timestamps:
     created_at (str): When investigation record created (ISO timestamp)
     updated_at (str): When investigation last updated (ISO timestamp)
@@ -49,6 +49,7 @@ import uuid as uuid_lib
 
 class InvestigationStatus(str, Enum):
     """Investigation status enumeration."""
+
     OPEN = "open"
     IN_PROGRESS = "in_progress"
     RESOLVED = "resolved"
@@ -57,6 +58,7 @@ class InvestigationStatus(str, Enum):
 
 class ImpactSeverity(str, Enum):
     """Impact severity enumeration."""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -65,6 +67,7 @@ class ImpactSeverity(str, Enum):
 
 class Priority(str, Enum):
     """Priority enumeration."""
+
     P0 = "p0"
     P1 = "p1"
     P2 = "p2"
@@ -73,12 +76,12 @@ class Priority(str, Enum):
 
 class Investigation:
     """Investigation domain model (Phase 3a - Expanded)."""
-    
+
     def __init__(
         self,
         id: Optional[str] = None,
-        title: str = '',
-        description: str = '',
+        title: str = "",
+        description: str = "",
         status: str = InvestigationStatus.OPEN,
         impact_severity: str = ImpactSeverity.MEDIUM,
         # Backwards-compatible alias for older code/tests
@@ -86,15 +89,15 @@ class Investigation:
         detected_at: Optional[str] = None,
         started_at: Optional[str] = None,
         resolved_at: Optional[str] = None,
-        root_cause: str = '',
-        remediation: str = '',
-        lessons_learned: str = '',
-        component_affected: str = '',
-        service_affected: str = '',
+        root_cause: str = "",
+        remediation: str = "",
+        lessons_learned: str = "",
+        component_affected: str = "",
+        service_affected: str = "",
         tags: Optional[List[str]] = None,
         event_ids: Optional[List[str]] = None,
         related_investigation_ids: Optional[List[str]] = None,
-        created_by: str = '',
+        created_by: str = "",
         assigned_to: Optional[str] = None,
         priority: str = Priority.P2,
         created_at: Optional[str] = None,
@@ -102,7 +105,7 @@ class Investigation:
         deleted_at: Optional[str] = None,
     ):
         """Initialize an Investigation (Phase 3a Expanded).
-        
+
         Args:
             id: Unique investigation identifier (UUID)
             title: Investigation title
@@ -134,7 +137,7 @@ class Investigation:
             raise ValueError("remediation must be <= 2000 characters")
         if len(lessons_learned) > 2000:
             raise ValueError("lessons_learned must be <= 2000 characters")
-        
+
         # Generate id if not provided for convenience in tests and callers
         self.id = id or str(uuid_lib.uuid4())
         self.title = title
@@ -162,156 +165,177 @@ class Investigation:
         self.created_at = created_at or datetime.utcnow().isoformat()
         self.updated_at = updated_at or datetime.utcnow().isoformat()
         self.deleted_at = deleted_at
-    
+
     def is_active(self) -> bool:
         """Check if investigation is active (not soft-deleted).
-        
+
         Returns:
             True if active, False if soft-deleted
         """
         return self.deleted_at is None
-    
+
     def add_tag(self, tag: str) -> None:
         """Add a tag to investigation.
-        
+
         Args:
             tag: Tag to add
         """
         if tag not in self.tags:
             self.tags.append(tag)
         self._update_timestamp()
-    
+
     def remove_tag(self, tag: str) -> None:
         """Remove a tag from investigation.
-        
+
         Args:
             tag: Tag to remove
         """
         if tag in self.tags:
             self.tags.remove(tag)
         self._update_timestamp()
-    
+
     def link_event(self, event_id: str) -> None:
         """Link an event to this investigation.
-        
+
         Args:
             event_id: Event ID to link
         """
         if event_id not in self.event_ids:
             self.event_ids.append(event_id)
         self._update_timestamp()
-    
+
     def unlink_event(self, event_id: str) -> None:
         """Unlink an event from this investigation.
-        
+
         Args:
             event_id: Event ID to unlink
         """
         if event_id in self.event_ids:
             self.event_ids.remove(event_id)
         self._update_timestamp()
-    
+
     def link_investigation(self, investigation_id: str) -> None:
         """Link a related investigation.
-        
+
         Args:
             investigation_id: Investigation ID to link
         """
         if investigation_id not in self.related_investigation_ids:
             self.related_investigation_ids.append(investigation_id)
         self._update_timestamp()
-    
+
     def soft_delete(self) -> None:
         """Soft-delete this investigation."""
         self.deleted_at = datetime.utcnow().isoformat()
         self._update_timestamp()
-    
+
     def restore(self) -> None:
         """Restore a soft-deleted investigation."""
         self.deleted_at = None
         self._update_timestamp()
-    
+
     def _update_timestamp(self) -> None:
         """Update the updated_at timestamp."""
         self.updated_at = datetime.utcnow().isoformat()
 
     def to_dict(self) -> dict:
         """Convert investigation to dictionary.
-        
+
         Returns:
             Dictionary representation of investigation
         """
         return {
-            'id': self.id,
-            'title': self.title,
-            'description': self.description,
-            'status': self.status,
-            'impact_severity': self.impact_severity,
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "status": self.status,
+            "impact_severity": self.impact_severity,
             # Backwards compatibility
-            'severity': self.severity,
-            'detected_at': self.detected_at,
-            'started_at': self.started_at,
-            'resolved_at': self.resolved_at,
-            'root_cause': self.root_cause,
-            'remediation': self.remediation,
-            'lessons_learned': self.lessons_learned,
-            'component_affected': self.component_affected,
-            'service_affected': self.service_affected,
-            'tags': self.tags,
-            'event_ids': self.event_ids,
-            'related_investigation_ids': self.related_investigation_ids,
-            'created_by': self.created_by,
-            'assigned_to': self.assigned_to,
-            'priority': self.priority,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
-            'deleted_at': self.deleted_at,
+            "severity": self.severity,
+            "detected_at": self.detected_at,
+            "started_at": self.started_at,
+            "resolved_at": self.resolved_at,
+            "root_cause": self.root_cause,
+            "remediation": self.remediation,
+            "lessons_learned": self.lessons_learned,
+            "component_affected": self.component_affected,
+            "service_affected": self.service_affected,
+            "tags": self.tags,
+            "event_ids": self.event_ids,
+            "related_investigation_ids": self.related_investigation_ids,
+            "created_by": self.created_by,
+            "assigned_to": self.assigned_to,
+            "priority": self.priority,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "deleted_at": self.deleted_at,
         }
 
     def update(self, **kwargs) -> None:
         """Update investigation fields.
-        
+
         Args:
             **kwargs: Field names and values to update
         """
         # List of immutable fields
-        immutable = {'id', 'created_at', 'created_by'}
-        
+        immutable = {"id", "created_at", "created_by"}
+
         for key, value in kwargs.items():
             if hasattr(self, key) and key not in immutable:
                 # Validate field lengths for text fields
-                if key == 'root_cause' and len(value) > 2000:
+                if key == "root_cause" and len(value) > 2000:
                     raise ValueError("root_cause must be <= 2000 characters")
-                if key == 'remediation' and len(value) > 2000:
+                if key == "remediation" and len(value) > 2000:
                     raise ValueError("remediation must be <= 2000 characters")
-                if key == 'lessons_learned' and len(value) > 2000:
+                if key == "lessons_learned" and len(value) > 2000:
                     raise ValueError("lessons_learned must be <= 2000 characters")
-                
+
                 setattr(self, key, value)
-        
+
         self._update_timestamp()
 
     @staticmethod
-    def from_dict(data: dict) -> 'Investigation':
+    def from_dict(data: dict) -> "Investigation":
         """Create Investigation from dictionary.
-        
+
         Args:
             data: Dictionary with investigation fields
-            
+
         Returns:
             Investigation instance
         """
         # Accept legacy 'severity' key when present
-        init_kwargs = {k: v for k, v in data.items() if k in [
-            'id', 'title', 'description', 'status', 'impact_severity',
-            'detected_at', 'started_at', 'resolved_at', 'root_cause',
-            'remediation', 'lessons_learned', 'component_affected',
-            'service_affected', 'tags', 'event_ids', 'related_investigation_ids',
-            'created_by', 'assigned_to', 'priority', 'created_at',
-            'updated_at', 'deleted_at'
-        ]})
-        if 'severity' in data and 'impact_severity' not in init_kwargs:
-            init_kwargs['severity'] = data['severity']
+        init_kwargs = {
+            k: v
+            for k, v in data.items()
+            if k
+            in [
+                "id",
+                "title",
+                "description",
+                "status",
+                "impact_severity",
+                "detected_at",
+                "started_at",
+                "resolved_at",
+                "root_cause",
+                "remediation",
+                "lessons_learned",
+                "component_affected",
+                "service_affected",
+                "tags",
+                "event_ids",
+                "related_investigation_ids",
+                "created_by",
+                "assigned_to",
+                "priority",
+                "created_at",
+                "updated_at",
+                "deleted_at",
+            ]
+        }
+        if "severity" in data and "impact_severity" not in init_kwargs:
+            init_kwargs["severity"] = data["severity"]
 
         return Investigation(**init_kwargs)
 
@@ -327,7 +351,7 @@ class Investigation:
 
 class InvestigationEvent:
     """Links an investigation to an event from git/CI/monitoring."""
-    
+
     def __init__(
         self,
         id: str,
@@ -340,7 +364,7 @@ class InvestigationEvent:
         created_at: Optional[str] = None,
     ):
         """Initialize an InvestigationEvent link.
-        
+
         Args:
             id: Unique event link identifier
             investigation_id: Parent investigation ID
@@ -362,25 +386,25 @@ class InvestigationEvent:
 
     def to_dict(self) -> dict:
         """Convert to dictionary.
-        
+
         Returns:
             Dictionary representation
         """
         return {
-            'id': self.id,
-            'investigation_id': self.investigation_id,
-            'event_id': self.event_id,
-            'event_type': self.event_type,
-            'source': self.source,
-            'message': self.message,
-            'timestamp': self.timestamp,
-            'created_at': self.created_at,
+            "id": self.id,
+            "investigation_id": self.investigation_id,
+            "event_id": self.event_id,
+            "event_type": self.event_type,
+            "source": self.source,
+            "message": self.message,
+            "timestamp": self.timestamp,
+            "created_at": self.created_at,
         }
 
 
 class Annotation:
     """Annotation/note attached to an investigation with optional threading."""
-    
+
     def __init__(
         self,
         id: str,
@@ -392,7 +416,7 @@ class Annotation:
         parent_annotation_id: Optional[str] = None,
     ):
         """Initialize an Annotation.
-        
+
         Args:
             id: Unique annotation identifier
             investigation_id: Parent investigation ID
@@ -412,23 +436,23 @@ class Annotation:
 
     def to_dict(self) -> dict:
         """Convert to dictionary.
-        
+
         Returns:
             Dictionary representation
         """
         return {
-            'id': self.id,
-            'investigation_id': self.investigation_id,
-            'author': self.author,
-            'text': self.text,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
-            'parent_annotation_id': self.parent_annotation_id,
+            "id": self.id,
+            "investigation_id": self.investigation_id,
+            "author": self.author,
+            "text": self.text,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "parent_annotation_id": self.parent_annotation_id,
         }
 
     def update(self, text: str) -> None:
         """Update annotation text.
-        
+
         Args:
             text: New annotation text
         """

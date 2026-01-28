@@ -8,8 +8,12 @@ import pytest
 import json
 from datetime import datetime
 from src.models.canvas import (
-    Canvas, CanvasNode, CanvasEdge, CanvasStore,
-    NodeType, EdgeType
+    Canvas,
+    CanvasNode,
+    CanvasEdge,
+    CanvasStore,
+    NodeType,
+    EdgeType,
 )
 
 
@@ -105,21 +109,21 @@ class TestCanvasNode:
         """Test converting node to dictionary"""
         node_dict = sample_node.to_dict()
 
-        assert node_dict['id'] == "node-1"
-        assert node_dict['type'] == "EVENT"
-        assert node_dict['title'] == "Database Connection Error"
-        assert node_dict['position']['x'] == 100.0
-        assert node_dict['position']['y'] == 200.0
-        assert 'created_at' in node_dict
-        assert 'updated_at' in node_dict
+        assert node_dict["id"] == "node-1"
+        assert node_dict["type"] == "EVENT"
+        assert node_dict["title"] == "Database Connection Error"
+        assert node_dict["position"]["x"] == 100.0
+        assert node_dict["position"]["y"] == 200.0
+        assert "created_at" in node_dict
+        assert "updated_at" in node_dict
 
     def test_node_to_json(self, sample_node):
         """Test converting node to JSON"""
         node_json = sample_node.to_json()
         parsed = json.loads(node_json)
 
-        assert parsed['id'] == "node-1"
-        assert parsed['type'] == "EVENT"
+        assert parsed["id"] == "node-1"
+        assert parsed["type"] == "EVENT"
 
     def test_node_from_dict(self, sample_node):
         """Test creating node from dictionary"""
@@ -133,20 +137,12 @@ class TestCanvasNode:
 
     def test_node_default_position(self):
         """Test node default position is (0, 0)"""
-        node = CanvasNode(
-            id="test",
-            type=NodeType.METRIC,
-            title="Test Node"
-        )
+        node = CanvasNode(id="test", type=NodeType.METRIC, title="Test Node")
         assert node.position == (0.0, 0.0)
 
     def test_node_default_size(self):
         """Test node default size"""
-        node = CanvasNode(
-            id="test",
-            type=NodeType.METRIC,
-            title="Test Node"
-        )
+        node = CanvasNode(id="test", type=NodeType.METRIC, title="Test Node")
         assert node.size == (200.0, 100.0)
 
     def test_node_metadata_storage(self):
@@ -155,7 +151,7 @@ class TestCanvasNode:
             id="test",
             type=NodeType.EVENT,
             title="Test Node",
-            metadata={"severity": "CRITICAL", "owner": "platform-team"}
+            metadata={"severity": "CRITICAL", "owner": "platform-team"},
         )
         assert node.metadata["severity"] == "CRITICAL"
         assert node.metadata["owner"] == "platform-team"
@@ -166,7 +162,7 @@ class TestCanvasNode:
             id="test",
             type=NodeType.EVENT,
             title="Test Node",
-            data={"timestamp": "2024-01-28", "count": 42}
+            data={"timestamp": "2024-01-28", "count": 42},
         )
         assert node.data["timestamp"] == "2024-01-28"
         assert node.data["count"] == 42
@@ -177,7 +173,7 @@ class TestCanvasNode:
             node = CanvasNode(
                 id=f"test-{node_type.value}",
                 type=node_type,
-                title=f"Test {node_type.value}"
+                title=f"Test {node_type.value}",
             )
             assert node.type == node_type
 
@@ -211,11 +207,11 @@ class TestCanvasEdge:
         )
         edge_dict = edge.to_dict()
 
-        assert edge_dict['id'] == "edge-1"
-        assert edge_dict['source'] == "node-1"
-        assert edge_dict['target'] == "node-2"
-        assert edge_dict['type'] == "CORRELATION"
-        assert edge_dict['strength'] == 1.0
+        assert edge_dict["id"] == "edge-1"
+        assert edge_dict["source"] == "node-1"
+        assert edge_dict["target"] == "node-2"
+        assert edge_dict["type"] == "CORRELATION"
+        assert edge_dict["strength"] == 1.0
 
     def test_edge_to_json(self):
         """Test converting edge to JSON"""
@@ -228,8 +224,8 @@ class TestCanvasEdge:
         edge_json = edge.to_json()
         parsed = json.loads(edge_json)
 
-        assert parsed['id'] == "edge-1"
-        assert parsed['type'] == "SEQUENCE"
+        assert parsed["id"] == "edge-1"
+        assert parsed["type"] == "SEQUENCE"
 
     def test_edge_from_dict(self):
         """Test creating edge from dictionary"""
@@ -278,11 +274,7 @@ class TestCanvas:
     def test_add_node_to_canvas(self, sample_canvas, sample_node):
         """Test adding a node to canvas"""
         initial_count = len(sample_canvas.nodes)
-        new_node = CanvasNode(
-            id="new-node",
-            type=NodeType.INSIGHT,
-            title="New Insight"
-        )
+        new_node = CanvasNode(id="new-node", type=NodeType.INSIGHT, title="New Insight")
         sample_canvas.add_node(new_node)
 
         assert len(sample_canvas.nodes) == initial_count + 1
@@ -329,8 +321,10 @@ class TestCanvas:
 
         assert sample_canvas.get_node("node-1") is None
         # Edges should also be removed
-        assert all(e.source_id != "node-1" and e.target_id != "node-1"
-                   for e in sample_canvas.edges.values())
+        assert all(
+            e.source_id != "node-1" and e.target_id != "node-1"
+            for e in sample_canvas.edges.values()
+        )
 
     def test_remove_nonexistent_node(self, sample_canvas):
         """Test removing nonexistent node raises error"""
@@ -384,18 +378,18 @@ class TestCanvas:
         """Test converting canvas to dictionary"""
         canvas_dict = sample_canvas.to_dict()
 
-        assert canvas_dict['id'] == "canvas-1"
-        assert canvas_dict['investigation_id'] == "inv-1"
-        assert len(canvas_dict['nodes']) == 3
-        assert len(canvas_dict['edges']) == 2
+        assert canvas_dict["id"] == "canvas-1"
+        assert canvas_dict["investigation_id"] == "inv-1"
+        assert len(canvas_dict["nodes"]) == 3
+        assert len(canvas_dict["edges"]) == 2
 
     def test_canvas_to_json(self, sample_canvas):
         """Test converting canvas to JSON"""
         canvas_json = sample_canvas.to_json()
         parsed = json.loads(canvas_json)
 
-        assert parsed['id'] == "canvas-1"
-        assert len(parsed['nodes']) == 3
+        assert parsed["id"] == "canvas-1"
+        assert len(parsed["nodes"]) == 3
 
     def test_canvas_from_dict(self, sample_canvas):
         """Test creating canvas from dictionary"""
@@ -520,21 +514,19 @@ class TestCanvasIntegration:
             canvas.add_node(event)
 
         # Add causality
-        canvas.add_edge(CanvasEdge(
-            "rel1", "e1", "e2", EdgeType.CAUSE_EFFECT, "caused", 0.9
-        ))
-        canvas.add_edge(CanvasEdge(
-            "rel2", "e2", "e3", EdgeType.CAUSE_EFFECT, "caused", 0.85
-        ))
+        canvas.add_edge(
+            CanvasEdge("rel1", "e1", "e2", EdgeType.CAUSE_EFFECT, "caused", 0.9)
+        )
+        canvas.add_edge(
+            CanvasEdge("rel2", "e2", "e3", EdgeType.CAUSE_EFFECT, "caused", 0.85)
+        )
 
         # Add resolution
         resolution = CanvasNode(
             "r1", NodeType.RESOLUTION, "Scale DB", position=(300, 300)
         )
         canvas.add_node(resolution)
-        canvas.add_edge(CanvasEdge(
-            "rel3", "e3", "r1", EdgeType.DEPENDS_ON
-        ))
+        canvas.add_edge(CanvasEdge("rel3", "e3", "r1", EdgeType.DEPENDS_ON))
 
         # Verify structure
         assert len(canvas.nodes) == 4
@@ -559,5 +551,5 @@ class TestCanvasIntegration:
         assert len(restored.edges) == len(sample_canvas.edges)
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

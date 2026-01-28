@@ -9,6 +9,7 @@ Usage examples:
 This script is intentionally conservative: it will not create duplicate issues with the same title.
 Requires the `gh` CLI to be authenticated and installed in PATH.
 """
+
 import argparse
 import json
 import subprocess
@@ -17,14 +18,27 @@ from typing import List
 
 
 def run(cmd: List[str]) -> str:
-    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    proc = subprocess.run(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+    )
     if proc.returncode != 0:
         raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{proc.stderr}")
     return proc.stdout
 
 
 def repo_list_from_org(org: str) -> List[str]:
-    out = run(["gh", "repo", "list", org, "--limit", "1000", "--json", "name,owner,isArchived"])
+    out = run(
+        [
+            "gh",
+            "repo",
+            "list",
+            org,
+            "--limit",
+            "1000",
+            "--json",
+            "name,owner,isArchived",
+        ]
+    )
     data = json.loads(out)
     repos = []
     for r in data:
@@ -34,7 +48,21 @@ def repo_list_from_org(org: str) -> List[str]:
 
 
 def issue_exists(repo: str, title: str) -> bool:
-    out = run(["gh", "issue", "list", "--repo", repo, "--state", "open", "--limit", "100", "--json", "title"]) 
+    out = run(
+        [
+            "gh",
+            "issue",
+            "list",
+            "--repo",
+            repo,
+            "--state",
+            "open",
+            "--limit",
+            "100",
+            "--json",
+            "title",
+        ]
+    )
     items = json.loads(out)
     for it in items:
         if it.get("title", "").strip().lower() == title.strip().lower():
@@ -42,7 +70,9 @@ def issue_exists(repo: str, title: str) -> bool:
     return False
 
 
-def create_issue(repo: str, title: str, body: str, labels: List[str], dry_run: bool) -> str:
+def create_issue(
+    repo: str, title: str, body: str, labels: List[str], dry_run: bool
+) -> str:
     if issue_exists(repo, title):
         return f"skipped: existing issue in {repo}"
     cmd = ["gh", "issue", "create", "--repo", repo, "--title", title, "--body", body]
@@ -64,10 +94,19 @@ def main():
     p.add_argument("--org", help="Organization or user to enumerate repos from")
     p.add_argument("--repos", help="Comma-separated list of repos (owner/repo)")
     p.add_argument("--title", required=True, help="Issue title to create")
-    p.add_argument("--body", help="Issue body text (mutually exclusive with --body-file)")
+    p.add_argument(
+        "--body", help="Issue body text (mutually exclusive with --body-file)"
+    )
     p.add_argument("--body-file", help="Path to file with issue body")
-    p.add_argument("--label", action="append", dest="labels", help="Labels to add to created issues")
-    p.add_argument("--dry-run", action="store_true", help="Do not create issues; only show actions")
+    p.add_argument(
+        "--label",
+        action="append",
+        dest="labels",
+        help="Labels to add to created issues",
+    )
+    p.add_argument(
+        "--dry-run", action="store_true", help="Do not create issues; only show actions"
+    )
     args = p.parse_args()
 
     if not args.body and not args.body_file:

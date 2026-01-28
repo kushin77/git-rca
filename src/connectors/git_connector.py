@@ -7,9 +7,9 @@ import json
 from src.store import sql_store
 from src.connectors import validator
 
-DATA_DIR = Path(__file__).resolve().parent.parent / 'data'
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
-EVENT_STORE = DATA_DIR / 'dev_git_events.jsonl'
+EVENT_STORE = DATA_DIR / "dev_git_events.jsonl"
 
 
 def ingest_event(event: Dict) -> None:
@@ -20,10 +20,10 @@ def ingest_event(event: Dict) -> None:
     if not validator.validate_event(event):
         # invalid event; drop for now
         return
-    with EVENT_STORE.open('a', encoding='utf-8') as f:
-        f.write(json.dumps(event, ensure_ascii=False) + '\n')
+    with EVENT_STORE.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(event, ensure_ascii=False) + "\n")
     try:
-        sql_store.insert_event('git', event)
+        sql_store.insert_event("git", event)
     except Exception:
         # Swallow DB errors in dev connector to avoid breaking ingest
         pass
@@ -39,7 +39,7 @@ def load_events(limit: int = 100) -> List[Dict]:
     if not EVENT_STORE.exists():
         return []
     res: List[Dict] = []
-    with EVENT_STORE.open('r', encoding='utf-8') as f:
+    with EVENT_STORE.open("r", encoding="utf-8") as f:
         for line in f:
             if len(res) >= limit:
                 break

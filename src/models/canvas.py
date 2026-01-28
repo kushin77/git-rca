@@ -25,6 +25,7 @@ import json
 
 class NodeType(Enum):
     """Types of nodes in the canvas"""
+
     EVENT = "EVENT"
     INVESTIGATION = "INVESTIGATION"
     RESOLUTION = "RESOLUTION"
@@ -35,6 +36,7 @@ class NodeType(Enum):
 
 class EdgeType(Enum):
     """Types of connections between nodes"""
+
     CAUSE_EFFECT = "CAUSE_EFFECT"
     CORRELATION = "CORRELATION"
     SEQUENCE = "SEQUENCE"
@@ -71,16 +73,16 @@ class CanvasNode:
     def to_dict(self) -> Dict:
         """Convert node to dictionary"""
         return {
-            'id': self.id,
-            'type': self.type.value,
-            'title': self.title,
-            'description': self.description,
-            'data': self.data,
-            'position': {'x': self.position[0], 'y': self.position[1]},
-            'size': {'width': self.size[0], 'height': self.size[1]},
-            'metadata': self.metadata,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
+            "id": self.id,
+            "type": self.type.value,
+            "title": self.title,
+            "description": self.description,
+            "data": self.data,
+            "position": {"x": self.position[0], "y": self.position[1]},
+            "size": {"width": self.size[0], "height": self.size[1]},
+            "metadata": self.metadata,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }
 
     def to_json(self) -> str:
@@ -88,19 +90,19 @@ class CanvasNode:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'CanvasNode':
+    def from_dict(cls, data: Dict) -> "CanvasNode":
         """Create node from dictionary"""
-        position = data.get('position', {})
-        size = data.get('size', {})
+        position = data.get("position", {})
+        size = data.get("size", {})
         return cls(
-            id=data['id'],
-            type=NodeType(data['type']),
-            title=data['title'],
-            description=data.get('description', ''),
-            data=data.get('data', {}),
-            position=(position.get('x', 0), position.get('y', 0)),
-            size=(size.get('width', 200), size.get('height', 100)),
-            metadata=data.get('metadata', {}),
+            id=data["id"],
+            type=NodeType(data["type"]),
+            title=data["title"],
+            description=data.get("description", ""),
+            data=data.get("data", {}),
+            position=(position.get("x", 0), position.get("y", 0)),
+            size=(size.get("width", 200), size.get("height", 100)),
+            metadata=data.get("metadata", {}),
         )
 
 
@@ -129,14 +131,14 @@ class CanvasEdge:
     def to_dict(self) -> Dict:
         """Convert edge to dictionary"""
         return {
-            'id': self.id,
-            'source': self.source_id,
-            'target': self.target_id,
-            'type': self.type.value,
-            'label': self.label,
-            'strength': self.strength,
-            'metadata': self.metadata,
-            'created_at': self.created_at,
+            "id": self.id,
+            "source": self.source_id,
+            "target": self.target_id,
+            "type": self.type.value,
+            "label": self.label,
+            "strength": self.strength,
+            "metadata": self.metadata,
+            "created_at": self.created_at,
         }
 
     def to_json(self) -> str:
@@ -144,16 +146,16 @@ class CanvasEdge:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'CanvasEdge':
+    def from_dict(cls, data: Dict) -> "CanvasEdge":
         """Create edge from dictionary"""
         return cls(
-            id=data['id'],
-            source_id=data['source'],
-            target_id=data['target'],
-            type=EdgeType(data['type']),
-            label=data.get('label', ''),
-            strength=data.get('strength', 1.0),
-            metadata=data.get('metadata', {}),
+            id=data["id"],
+            source_id=data["source"],
+            target_id=data["target"],
+            type=EdgeType(data["type"]),
+            label=data.get("label", ""),
+            strength=data.get("strength", 1.0),
+            metadata=data.get("metadata", {}),
         )
 
 
@@ -201,7 +203,8 @@ class Canvas:
 
         # Remove all edges connected to this node
         edges_to_remove = [
-            e_id for e_id, e in self.edges.items()
+            e_id
+            for e_id, e in self.edges.items()
             if e.source_id == node_id or e.target_id == node_id
         ]
         for e_id in edges_to_remove:
@@ -272,15 +275,15 @@ class Canvas:
     def to_dict(self) -> Dict:
         """Convert canvas to dictionary"""
         return {
-            'id': self.id,
-            'investigation_id': self.investigation_id,
-            'title': self.title,
-            'description': self.description,
-            'layout_type': self.layout_type,
-            'nodes': [node.to_dict() for node in self.nodes.values()],
-            'edges': [edge.to_dict() for edge in self.edges.values()],
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
+            "id": self.id,
+            "investigation_id": self.investigation_id,
+            "title": self.title,
+            "description": self.description,
+            "layout_type": self.layout_type,
+            "nodes": [node.to_dict() for node in self.nodes.values()],
+            "edges": [edge.to_dict() for edge in self.edges.values()],
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }
 
     def to_json(self) -> str:
@@ -288,22 +291,22 @@ class Canvas:
         return json.dumps(self.to_dict(), indent=2)
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Canvas':
+    def from_dict(cls, data: Dict) -> "Canvas":
         """Create canvas from dictionary"""
         canvas = cls(
-            id=data['id'],
-            investigation_id=data['investigation_id'],
-            title=data['title'],
-            description=data.get('description', ''),
-            layout_type=data.get('layout_type', 'force-directed'),
+            id=data["id"],
+            investigation_id=data["investigation_id"],
+            title=data["title"],
+            description=data.get("description", ""),
+            layout_type=data.get("layout_type", "force-directed"),
         )
 
         # Add nodes
-        for node_data in data.get('nodes', []):
+        for node_data in data.get("nodes", []):
             canvas.add_node(CanvasNode.from_dict(node_data))
 
         # Add edges
-        for edge_data in data.get('edges', []):
+        for edge_data in data.get("edges", []):
             canvas.add_edge(CanvasEdge.from_dict(edge_data))
 
         return canvas
@@ -325,7 +328,9 @@ class CanvasStore:
 
     def get_by_investigation(self, investigation_id: str) -> List[Canvas]:
         """Get all canvases for an investigation"""
-        return [c for c in self.canvases.values() if c.investigation_id == investigation_id]
+        return [
+            c for c in self.canvases.values() if c.investigation_id == investigation_id
+        ]
 
     def delete(self, canvas_id: str) -> None:
         """Delete a canvas"""

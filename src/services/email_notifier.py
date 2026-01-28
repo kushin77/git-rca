@@ -13,7 +13,7 @@ This service integrates with the investigation system to notify users when:
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Dict, Any
 import json
 import uuid
@@ -23,14 +23,14 @@ from src.store.investigation_store import InvestigationStore
 
 class NotificationPreferences:
     """User notification preferences."""
-    
+
     def __init__(
         self,
         user_email: str,
         notify_on_reply: bool = True,
         notify_on_event: bool = True,
         notify_on_milestone: bool = True,
-        digest_frequency: str = 'daily',  # daily, weekly, never
+        digest_frequency: str = "daily",  # daily, weekly, never
         unsubscribe_token: Optional[str] = None,
     ):
         self.user_email = user_email
@@ -39,38 +39,38 @@ class NotificationPreferences:
         self.notify_on_milestone = notify_on_milestone
         self.digest_frequency = digest_frequency
         self.unsubscribe_token = unsubscribe_token or str(uuid.uuid4())
-        self.created_at = datetime.now(UTC).isoformat()
-        self.updated_at = datetime.now(UTC).isoformat()
-    
+        self.created_at = datetime.now(timezone.utc).isoformat()
+        self.updated_at = datetime.now(timezone.utc).isoformat()
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'user_email': self.user_email,
-            'notify_on_reply': self.notify_on_reply,
-            'notify_on_event': self.notify_on_event,
-            'notify_on_milestone': self.notify_on_milestone,
-            'digest_frequency': self.digest_frequency,
-            'unsubscribe_token': self.unsubscribe_token,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
+            "user_email": self.user_email,
+            "notify_on_reply": self.notify_on_reply,
+            "notify_on_event": self.notify_on_event,
+            "notify_on_milestone": self.notify_on_milestone,
+            "digest_frequency": self.digest_frequency,
+            "unsubscribe_token": self.unsubscribe_token,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }
 
 
 class EmailNotifier:
     """Service for sending email notifications."""
-    
+
     def __init__(
         self,
-        smtp_host: str = 'localhost',
+        smtp_host: str = "localhost",
         smtp_port: int = 587,
         smtp_username: Optional[str] = None,
         smtp_password: Optional[str] = None,
-        from_email: str = 'noreply@git-rca.local',
-        from_name: str = 'Git RCA Workspace',
-        db_path: str = 'investigations.db',
+        from_email: str = "noreply@git-rca.local",
+        from_name: str = "Git RCA Workspace",
+        db_path: str = "investigations.db",
     ):
         """Initialize email notifier.
-        
+
         Args:
             smtp_host: SMTP server hostname
             smtp_port: SMTP server port
@@ -86,30 +86,33 @@ class EmailNotifier:
         self.smtp_password = smtp_password
         self.from_email = from_email
         self.from_name = from_name
-        
+
         # Import preferences store here to avoid circular imports
-        from src.store.notification_preferences_store import NotificationPreferencesStore
+        from src.store.notification_preferences_store import (
+            NotificationPreferencesStore,
+        )
+
         self.preferences_store = NotificationPreferencesStore(db_path)
-    
+
     def set_preferences(self, preferences: NotificationPreferences) -> None:
         """Set notification preferences for a user (persists to database).
-        
+
         Args:
             preferences: NotificationPreferences instance
         """
         self.preferences_store.set_preferences(preferences)
-    
+
     def get_preferences(self, user_email: str) -> Optional[NotificationPreferences]:
         """Get notification preferences for a user (loads from database).
-        
+
         Args:
             user_email: User email address
-            
+
         Returns:
             NotificationPreferences or None if not found
         """
         return self.preferences_store.get_preferences(user_email)
-    
+
     def notify_on_reply(
         self,
         recipient_email: str,
@@ -121,7 +124,7 @@ class EmailNotifier:
         investigation_url: str,
     ) -> bool:
         """Send email notification for annotation reply.
-        
+
         Args:
             recipient_email: Email address of original commenter
             recipient_name: Name of original commenter
@@ -130,7 +133,7 @@ class EmailNotifier:
             investigation_title: Investigation title
             investigation_id: Investigation ID
             investigation_url: URL to investigation
-            
+
         Returns:
             True if sent successfully, False otherwise
         """
@@ -138,9 +141,9 @@ class EmailNotifier:
         prefs = self.get_preferences(recipient_email)
         if prefs and not prefs.notify_on_reply:
             return False
-        
+
         subject = f"New reply on '{investigation_title}' - Git RCA"
-        
+
         # Build email content
         body_html = self._build_reply_email_html(
             recipient_name,
@@ -151,7 +154,7 @@ class EmailNotifier:
             investigation_url,
             prefs.unsubscribe_token if prefs else None,
         )
-        
+
         body_text = self._build_reply_email_text(
             recipient_name,
             annotation_author,
@@ -159,9 +162,9 @@ class EmailNotifier:
             investigation_title,
             investigation_url,
         )
-        
+
         return self._send_email(recipient_email, subject, body_html, body_text)
-    
+
     def notify_on_event(
         self,
         recipient_email: str,
@@ -172,7 +175,7 @@ class EmailNotifier:
         investigation_url: str,
     ) -> bool:
         """Send email notification for event linking.
-        
+
         Args:
             recipient_email: Email address of investigation owner
             recipient_name: Name of investigation owner
@@ -180,7 +183,7 @@ class EmailNotifier:
             investigation_title: Investigation title
             investigation_id: Investigation ID
             investigation_url: URL to investigation
-            
+
         Returns:
             True if sent successfully, False otherwise
         """
@@ -188,9 +191,11 @@ class EmailNotifier:
         prefs = self.get_preferences(recipient_email)
         if prefs and not prefs.notify_on_event:
             return False
-        
-        subject = f"{event_count} new events linked to '{investigation_title}' - Git RCA"
-        
+
+        subject = (
+            f"{event_count} new events linked to '{investigation_title}' - Git RCA"
+        )
+
         # Build email content
         body_html = self._build_event_email_html(
             recipient_name,
@@ -200,16 +205,16 @@ class EmailNotifier:
             investigation_url,
             prefs.unsubscribe_token if prefs else None,
         )
-        
+
         body_text = self._build_event_email_text(
             recipient_name,
             event_count,
             investigation_title,
             investigation_url,
         )
-        
+
         return self._send_email(recipient_email, subject, body_html, body_text)
-    
+
     def send_digest(
         self,
         recipient_email: str,
@@ -217,41 +222,41 @@ class EmailNotifier:
         digest_items: List[Dict[str, Any]],
     ) -> bool:
         """Send digest email with multiple notifications.
-        
+
         Args:
             recipient_email: Email address
             recipient_name: Name
             digest_items: List of digest items (replies, events, etc.)
-            
+
         Returns:
             True if sent successfully, False otherwise
         """
         if not digest_items:
             return False
-        
+
         prefs = self.get_preferences(recipient_email)
         subject = f"Git RCA Daily Digest - {len(digest_items)} updates"
-        
+
         # Build email content
         body_html = self._build_digest_email_html(
             recipient_name,
             digest_items,
             prefs.unsubscribe_token if prefs else None,
         )
-        
+
         body_text = self._build_digest_email_text(
             recipient_name,
             digest_items,
         )
-        
+
         return self._send_email(recipient_email, subject, body_html, body_text)
-    
+
     def unsubscribe(self, token: str) -> bool:
         """Unsubscribe user from all notifications.
-        
+
         Args:
             token: Unsubscribe token
-            
+
         Returns:
             True if unsubscribed, False if token invalid
         """
@@ -259,18 +264,18 @@ class EmailNotifier:
         prefs = self.preferences_store.get_preferences_by_token(token)
         if not prefs:
             return False
-        
+
         # Mark all notifications as disabled
         prefs.notify_on_reply = False
         prefs.notify_on_event = False
         prefs.notify_on_milestone = False
-        
+
         # Update in database
         self.preferences_store.update_preferences(prefs)
         return True
-    
+
     # Helper methods
-    
+
     def _send_email(
         self,
         recipient_email: str,
@@ -279,40 +284,40 @@ class EmailNotifier:
         body_text: str,
     ) -> bool:
         """Send email via SMTP.
-        
+
         Args:
             recipient_email: Recipient email address
             subject: Email subject
             body_html: HTML email body
             body_text: Plain text email body
-            
+
         Returns:
             True if sent successfully, False otherwise
         """
         try:
             # Create message
-            msg = MIMEMultipart('alternative')
-            msg['Subject'] = subject
-            msg['From'] = f"{self.from_name} <{self.from_email}>"
-            msg['To'] = recipient_email
-            
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"] = f"{self.from_name} <{self.from_email}>"
+            msg["To"] = recipient_email
+
             # Attach text and HTML parts
-            msg.attach(MIMEText(body_text, 'plain'))
-            msg.attach(MIMEText(body_html, 'html'))
-            
+            msg.attach(MIMEText(body_text, "plain"))
+            msg.attach(MIMEText(body_html, "html"))
+
             # Send email
             with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
                 if self.smtp_username and self.smtp_password:
                     server.starttls()
                     server.login(self.smtp_username, self.smtp_password)
-                
+
                 server.sendmail(self.from_email, recipient_email, msg.as_string())
-            
+
             return True
         except Exception as e:
             print(f"Error sending email: {e}")
             return False
-    
+
     @staticmethod
     def _build_reply_email_html(
         recipient_name: str,
@@ -324,8 +329,12 @@ class EmailNotifier:
         unsubscribe_token: Optional[str] = None,
     ) -> str:
         """Build HTML email for reply notification."""
-        unsubscribe_link = f"{investigation_url.rsplit('/', 1)[0]}/unsubscribe?token={unsubscribe_token}" if unsubscribe_token else ""
-        
+        unsubscribe_link = (
+            f"{investigation_url.rsplit('/', 1)[0]}/unsubscribe?token={unsubscribe_token}"
+            if unsubscribe_token
+            else ""
+        )
+
         return f"""
         <html>
             <body style="font-family: Arial, sans-serif; color: #333;">
@@ -356,7 +365,7 @@ class EmailNotifier:
             </body>
         </html>
         """
-    
+
     @staticmethod
     def _build_reply_email_text(
         recipient_name: str,
@@ -377,7 +386,7 @@ Hi {recipient_name},
 
 View the investigation: {investigation_url}
         """
-    
+
     @staticmethod
     def _build_event_email_html(
         recipient_name: str,
@@ -388,8 +397,12 @@ View the investigation: {investigation_url}
         unsubscribe_token: Optional[str] = None,
     ) -> str:
         """Build HTML email for event notification."""
-        unsubscribe_link = f"{investigation_url.rsplit('/', 1)[0]}/unsubscribe?token={unsubscribe_token}" if unsubscribe_token else ""
-        
+        unsubscribe_link = (
+            f"{investigation_url.rsplit('/', 1)[0]}/unsubscribe?token={unsubscribe_token}"
+            if unsubscribe_token
+            else ""
+        )
+
         return f"""
         <html>
             <body style="font-family: Arial, sans-serif; color: #333;">
@@ -418,7 +431,7 @@ View the investigation: {investigation_url}
             </body>
         </html>
         """
-    
+
     @staticmethod
     def _build_event_email_text(
         recipient_name: str,
@@ -436,7 +449,7 @@ These events may provide important context for your investigation.
 
 Review events: {investigation_url}
         """
-    
+
     @staticmethod
     def _build_digest_email_html(
         recipient_name: str,
@@ -446,22 +459,26 @@ Review events: {investigation_url}
         """Build HTML email for digest notification."""
         items_html = ""
         for item in digest_items:
-            if item['type'] == 'reply':
+            if item["type"] == "reply":
                 items_html += f"""
                 <div style="margin: 15px 0; padding: 15px; background-color: #f9f9f9; border-left: 3px solid #007bff;">
                     <p style="margin: 0 0 10px 0;"><strong>Reply on "{item['investigation_title']}"</strong></p>
                     <p style="margin: 0; color: #666;"><em>By {item['author']}</em></p>
                 </div>
                 """
-            elif item['type'] == 'events':
+            elif item["type"] == "events":
                 items_html += f"""
                 <div style="margin: 15px 0; padding: 15px; background-color: #f9f9f9; border-left: 3px solid #28a745;">
                     <p style="margin: 0 0 10px 0;"><strong>{item['count']} new events on "{item['investigation_title']}"</strong></p>
                 </div>
                 """
-        
-        unsubscribe_link = f"https://git-rca.local/unsubscribe?token={unsubscribe_token}" if unsubscribe_token else ""
-        
+
+        unsubscribe_link = (
+            f"https://git-rca.local/unsubscribe?token={unsubscribe_token}"
+            if unsubscribe_token
+            else ""
+        )
+
         return f"""
         <html>
             <body style="font-family: Arial, sans-serif; color: #333;">
@@ -489,18 +506,20 @@ Review events: {investigation_url}
             </body>
         </html>
         """
-    
+
     @staticmethod
     def _build_digest_email_text(
         recipient_name: str,
         digest_items: List[Dict[str, Any]],
     ) -> str:
         """Build plain text email for digest notification."""
-        items_text = "\n".join([
-            f"- {item['type'].upper()}: {item.get('investigation_title', 'N/A')}"
-            for item in digest_items
-        ])
-        
+        items_text = "\n".join(
+            [
+                f"- {item['type'].upper()}: {item.get('investigation_title', 'N/A')}"
+                for item in digest_items
+            ]
+        )
+
         return f"""
 Hi {recipient_name},
 

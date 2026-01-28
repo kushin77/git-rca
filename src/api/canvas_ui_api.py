@@ -19,14 +19,18 @@ from flask import Blueprint, request, jsonify
 from typing import Dict, Optional
 from datetime import datetime
 from src.models.canvas import (
-    Canvas, CanvasNode, CanvasEdge, CanvasStore,
-    NodeType, EdgeType
+    Canvas,
+    CanvasNode,
+    CanvasEdge,
+    CanvasStore,
+    NodeType,
+    EdgeType,
 )
 from src.models.investigation import Investigation
 from src.store.investigation_store import InvestigationStore
 
 # Create Blueprint
-canvas_bp = Blueprint('canvas', __name__, url_prefix='/api/canvas')
+canvas_bp = Blueprint("canvas", __name__, url_prefix="/api/canvas")
 
 # Global store (would be dependency injected in production)
 canvas_store = CanvasStore()
@@ -43,11 +47,11 @@ class CanvasUIAPI:
     def register_routes(self, app):
         """Register all canvas endpoints"""
 
-        @canvas_bp.route('/<canvas_id>', methods=['GET'])
+        @canvas_bp.route("/<canvas_id>", methods=["GET"])
         def get_canvas(canvas_id):
             """
             Get canvas by ID
-            
+
             Returns:
             - 200: Canvas data with all nodes and edges
             - 404: Canvas not found
@@ -55,18 +59,18 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 return jsonify(canvas.to_dict()), 200
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('', methods=['POST'])
+        @canvas_bp.route("", methods=["POST"])
         def create_canvas():
             """
             Create new canvas
-            
+
             Request body:
             {
                 "investigation_id": "inv-1",
@@ -74,7 +78,7 @@ class CanvasUIAPI:
                 "description": "Optional description",
                 "layout_type": "force-directed"
             }
-            
+
             Returns:
             - 201: Created canvas with ID
             - 400: Invalid request
@@ -83,23 +87,23 @@ class CanvasUIAPI:
                 data = request.get_json()
 
                 # Validate required fields
-                if not data or 'investigation_id' not in data:
-                    return jsonify({'error': 'Missing investigation_id'}), 400
-                if 'title' not in data:
-                    return jsonify({'error': 'Missing title'}), 400
+                if not data or "investigation_id" not in data:
+                    return jsonify({"error": "Missing investigation_id"}), 400
+                if "title" not in data:
+                    return jsonify({"error": "Missing title"}), 400
 
                 # Verify investigation exists
-                inv = self.inv_store.get_investigation(data['investigation_id'])
+                inv = self.inv_store.get_investigation(data["investigation_id"])
                 if not inv:
-                    return jsonify({'error': 'Investigation not found'}), 404
+                    return jsonify({"error": "Investigation not found"}), 404
 
                 # Create canvas
                 canvas = Canvas(
                     id=f"canvas-{datetime.utcnow().timestamp()}",
-                    investigation_id=data['investigation_id'],
-                    title=data['title'],
-                    description=data.get('description', ''),
-                    layout_type=data.get('layout_type', 'force-directed'),
+                    investigation_id=data["investigation_id"],
+                    title=data["title"],
+                    description=data.get("description", ""),
+                    layout_type=data.get("layout_type", "force-directed"),
                 )
 
                 self.canvas_store.add(canvas)
@@ -107,19 +111,19 @@ class CanvasUIAPI:
                 return jsonify(canvas.to_dict()), 201
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>', methods=['PUT'])
+        @canvas_bp.route("/<canvas_id>", methods=["PUT"])
         def update_canvas(canvas_id):
             """
             Update canvas
-            
+
             Request body:
             {
                 "title": "Updated title",
                 "description": "Updated description"
             }
-            
+
             Returns:
             - 200: Updated canvas
             - 404: Canvas not found
@@ -127,14 +131,14 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 data = request.get_json()
 
-                if 'title' in data:
-                    canvas.title = data['title']
-                if 'description' in data:
-                    canvas.description = data['description']
+                if "title" in data:
+                    canvas.title = data["title"]
+                if "description" in data:
+                    canvas.description = data["description"]
 
                 canvas.updated_at = datetime.utcnow().isoformat()
                 self.canvas_store.update(canvas)
@@ -142,13 +146,13 @@ class CanvasUIAPI:
                 return jsonify(canvas.to_dict()), 200
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>', methods=['DELETE'])
+        @canvas_bp.route("/<canvas_id>", methods=["DELETE"])
         def delete_canvas(canvas_id):
             """
             Delete canvas
-            
+
             Returns:
             - 204: Canvas deleted
             - 404: Canvas not found
@@ -156,19 +160,19 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 self.canvas_store.delete(canvas_id)
-                return '', 204
+                return "", 204
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>/nodes', methods=['POST'])
+        @canvas_bp.route("/<canvas_id>/nodes", methods=["POST"])
         def add_node(canvas_id):
             """
             Add node to canvas
-            
+
             Request body:
             {
                 "type": "EVENT|INVESTIGATION|RESOLUTION|TOOL|METRIC|INSIGHT",
@@ -178,7 +182,7 @@ class CanvasUIAPI:
                 "position": {"x": 100, "y": 200},
                 "size": {"width": 200, "height": 100}
             }
-            
+
             Returns:
             - 201: Node created
             - 400: Invalid request
@@ -187,23 +191,23 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 data = request.get_json()
 
                 # Validate required fields
-                if 'type' not in data or 'title' not in data:
-                    return jsonify({'error': 'Missing required fields'}), 400
+                if "type" not in data or "title" not in data:
+                    return jsonify({"error": "Missing required fields"}), 400
 
                 # Create node
                 node = CanvasNode(
                     id=f"node-{datetime.utcnow().timestamp()}",
-                    type=NodeType(data['type']),
-                    title=data['title'],
-                    description=data.get('description', ''),
-                    data=data.get('data', {}),
-                    position=tuple(data.get('position', {}).values()) or (0, 0),
-                    size=tuple(data.get('size', {}).values()) or (200, 100),
+                    type=NodeType(data["type"]),
+                    title=data["title"],
+                    description=data.get("description", ""),
+                    data=data.get("data", {}),
+                    position=tuple(data.get("position", {}).values()) or (0, 0),
+                    size=tuple(data.get("size", {}).values()) or (200, 100),
                 )
 
                 canvas.add_node(node)
@@ -212,15 +216,15 @@ class CanvasUIAPI:
                 return jsonify(node.to_dict()), 201
 
             except ValueError as e:
-                return jsonify({'error': f'Invalid node type: {str(e)}'}), 400
+                return jsonify({"error": f"Invalid node type: {str(e)}"}), 400
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>/nodes/<node_id>', methods=['DELETE'])
+        @canvas_bp.route("/<canvas_id>/nodes/<node_id>", methods=["DELETE"])
         def remove_node(canvas_id, node_id):
             """
             Remove node from canvas
-            
+
             Returns:
             - 204: Node removed
             - 404: Canvas or node not found
@@ -228,24 +232,24 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 if canvas.get_node(node_id) is None:
-                    return jsonify({'error': 'Node not found'}), 404
+                    return jsonify({"error": "Node not found"}), 404
 
                 canvas.remove_node(node_id)
                 self.canvas_store.update(canvas)
 
-                return '', 204
+                return "", 204
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>/edges', methods=['POST'])
+        @canvas_bp.route("/<canvas_id>/edges", methods=["POST"])
         def add_edge(canvas_id):
             """
             Add edge (relationship) between nodes
-            
+
             Request body:
             {
                 "source_id": "node-1",
@@ -254,7 +258,7 @@ class CanvasUIAPI:
                 "label": "Optional label",
                 "strength": 0.95
             }
-            
+
             Returns:
             - 201: Edge created
             - 400: Invalid request
@@ -263,24 +267,24 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 data = request.get_json()
 
                 # Validate
-                if 'source_id' not in data or 'target_id' not in data:
-                    return jsonify({'error': 'Missing source/target'}), 400
-                if 'type' not in data:
-                    return jsonify({'error': 'Missing edge type'}), 400
+                if "source_id" not in data or "target_id" not in data:
+                    return jsonify({"error": "Missing source/target"}), 400
+                if "type" not in data:
+                    return jsonify({"error": "Missing edge type"}), 400
 
                 # Create edge
                 edge = CanvasEdge(
                     id=f"edge-{datetime.utcnow().timestamp()}",
-                    source_id=data['source_id'],
-                    target_id=data['target_id'],
-                    type=EdgeType(data['type']),
-                    label=data.get('label', ''),
-                    strength=data.get('strength', 1.0),
+                    source_id=data["source_id"],
+                    target_id=data["target_id"],
+                    type=EdgeType(data["type"]),
+                    label=data.get("label", ""),
+                    strength=data.get("strength", 1.0),
                 )
 
                 canvas.add_edge(edge)
@@ -289,15 +293,15 @@ class CanvasUIAPI:
                 return jsonify(edge.to_dict()), 201
 
             except ValueError as e:
-                return jsonify({'error': f'Invalid edge type: {str(e)}'}), 400
+                return jsonify({"error": f"Invalid edge type: {str(e)}"}), 400
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>/edges/<edge_id>', methods=['DELETE'])
+        @canvas_bp.route("/<canvas_id>/edges/<edge_id>", methods=["DELETE"])
         def remove_edge(canvas_id, edge_id):
             """
             Remove edge from canvas
-            
+
             Returns:
             - 204: Edge removed
             - 404: Canvas or edge not found
@@ -305,28 +309,28 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 if canvas.get_edge(edge_id) is None:
-                    return jsonify({'error': 'Edge not found'}), 404
+                    return jsonify({"error": "Edge not found"}), 404
 
                 canvas.remove_edge(edge_id)
                 self.canvas_store.update(canvas)
 
-                return '', 204
+                return "", 204
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
-        @canvas_bp.route('/<canvas_id>/analysis', methods=['GET'])
+        @canvas_bp.route("/<canvas_id>/analysis", methods=["GET"])
         def get_canvas_analysis(canvas_id):
             """
             Get analysis and recommendations for canvas
-            
+
             Returns:
             - 200: Analysis data with insights
             - 404: Canvas not found
-            
+
             Response:
             {
                 "node_count": 5,
@@ -342,7 +346,7 @@ class CanvasUIAPI:
             try:
                 canvas = self.canvas_store.get(canvas_id)
                 if not canvas:
-                    return jsonify({'error': 'Canvas not found'}), 404
+                    return jsonify({"error": "Canvas not found"}), 404
 
                 # Count nodes by type
                 event_count = len(canvas.get_nodes_by_type(NodeType.EVENT))
@@ -361,46 +365,59 @@ class CanvasUIAPI:
                 # Generate insights
                 insights = []
                 if max_connections > 5:
-                    insights.append({
-                        'type': 'warning',
-                        'message': f'High complexity detected: {max_connections} connections',
-                    })
+                    insights.append(
+                        {
+                            "type": "warning",
+                            "message": f"High complexity detected: {max_connections} connections",
+                        }
+                    )
 
                 if resolution_count == 0:
-                    insights.append({
-                        'type': 'info',
-                        'message': 'No resolution nodes found - add resolution steps',
-                    })
+                    insights.append(
+                        {
+                            "type": "info",
+                            "message": "No resolution nodes found - add resolution steps",
+                        }
+                    )
 
                 if event_count > 10:
-                    insights.append({
-                        'type': 'info',
-                        'message': f'Multiple events ({event_count}) - consider grouping',
-                    })
+                    insights.append(
+                        {
+                            "type": "info",
+                            "message": f"Multiple events ({event_count}) - consider grouping",
+                        }
+                    )
 
-                return jsonify({
-                    'node_count': len(canvas.nodes),
-                    'edge_count': len(canvas.edges),
-                    'event_nodes': event_count,
-                    'resolution_nodes': resolution_count,
-                    'insight_nodes': insight_count,
-                    'most_connected_node': most_connected,
-                    'connections_to_most_connected': max_connections,
-                    'insights': insights,
-                    'timestamp': datetime.utcnow().isoformat(),
-                }), 200
+                return (
+                    jsonify(
+                        {
+                            "node_count": len(canvas.nodes),
+                            "edge_count": len(canvas.edges),
+                            "event_nodes": event_count,
+                            "resolution_nodes": resolution_count,
+                            "insight_nodes": insight_count,
+                            "most_connected_node": most_connected,
+                            "connections_to_most_connected": max_connections,
+                            "insights": insights,
+                            "timestamp": datetime.utcnow().isoformat(),
+                        }
+                    ),
+                    200,
+                )
 
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
+                return jsonify({"error": str(e)}), 500
 
         # Register blueprint
         app.register_blueprint(canvas_bp)
 
 
-def register_canvas_ui_api(app, canvas_store: CanvasStore, inv_store: InvestigationStore):
+def register_canvas_ui_api(
+    app, canvas_store: CanvasStore, inv_store: InvestigationStore
+):
     """
     Register canvas UI API with Flask app
-    
+
     Usage in app.py:
         from src.api.canvas_ui_api import register_canvas_ui_api
         register_canvas_ui_api(app, canvas_store, investigation_store)

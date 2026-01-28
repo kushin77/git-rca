@@ -22,29 +22,26 @@ def event_store():
     # Create sample events with different sources and severities
     event_data = [
         # git source events
-        *[{'source': 'git', 'severity': 'critical'} for _ in range(25)],
-        *[{'source': 'git', 'severity': 'high'} for _ in range(50)],
-        *[{'source': 'git', 'severity': 'medium'} for _ in range(75)],
-
+        *[{"source": "git", "severity": "critical"} for _ in range(25)],
+        *[{"source": "git", "severity": "high"} for _ in range(50)],
+        *[{"source": "git", "severity": "medium"} for _ in range(75)],
         # ci source events
-        *[{'source': 'ci', 'severity': 'high'} for _ in range(40)],
-        *[{'source': 'ci', 'severity': 'medium'} for _ in range(60)],
-
+        *[{"source": "ci", "severity": "high"} for _ in range(40)],
+        *[{"source": "ci", "severity": "medium"} for _ in range(60)],
         # logs source events
-        *[{'source': 'logs', 'severity': 'medium'} for _ in range(80)],
-        *[{'source': 'logs', 'severity': 'low'} for _ in range(120)],
-
+        *[{"source": "logs", "severity": "medium"} for _ in range(80)],
+        *[{"source": "logs", "severity": "low"} for _ in range(120)],
         # metrics source events
-        *[{'source': 'metrics', 'severity': 'info'} for _ in range(200)],
+        *[{"source": "metrics", "severity": "info"} for _ in range(200)],
     ]
 
     # Add events to store
     for i, data in enumerate(event_data):
         event = Event(
             id=f"evt-{i+1}",
-            source=data['source'],
-            severity=data['severity'],
-            event_type='test_event',
+            source=data["source"],
+            severity=data["severity"],
+            event_type="test_event",
             timestamp=datetime.utcnow().isoformat(),
         )
         store.add(event)
@@ -57,11 +54,11 @@ def investigation_store():
     """Create investigation store with sample data"""
     import tempfile
     import os
-    
+
     # Create temporary database
-    db_fd, db_path = tempfile.mkstemp(suffix='.db')
+    db_fd, db_path = tempfile.mkstemp(suffix=".db")
     os.close(db_fd)
-    
+
     store = InvestigationStore(db_path=db_path)
 
     # Create sample investigations (use create_investigation method)
@@ -70,7 +67,7 @@ def investigation_store():
             title=f"Investigation {i+1}",
             description="Resolved investigation",
             severity="medium",
-            status="resolved"
+            status="resolved",
         )
 
     for i in range(3):
@@ -78,7 +75,7 @@ def investigation_store():
             title=f"Open Investigation {i+1}",
             description="Active investigation",
             severity="high",
-            status="open"
+            status="open",
         )
 
     return store
@@ -108,6 +105,7 @@ class TestAnalyticsAPI:
         events = api.event_store.get_all()
 
         from collections import Counter
+
         source_counts = Counter()
         for event in events:
             source_counts[event.source] += 1
@@ -115,17 +113,17 @@ class TestAnalyticsAPI:
         total = len(events)
         for source, count in source_counts.items():
             result[source] = {
-                'count': count,
-                'percentage': round((count / total * 100) if total > 0 else 0, 1),
+                "count": count,
+                "percentage": round((count / total * 100) if total > 0 else 0, 1),
             }
 
         # Assertions
         assert len(result) > 0
-        assert 'git' in result
-        assert 'ci' in result
-        assert result['git']['count'] == 150
-        assert result['ci']['count'] == 100
-        assert sum(r['count'] for r in result.values()) == total
+        assert "git" in result
+        assert "ci" in result
+        assert result["git"]["count"] == 150
+        assert result["ci"]["count"] == 100
+        assert sum(r["count"] for r in result.values()) == total
 
     def test_get_events_by_severity_distribution(self, analytics_api):
         """Test getting event distribution by severity"""
@@ -134,26 +132,27 @@ class TestAnalyticsAPI:
         # Simulate request
         events = api.event_store.get_all()
         from collections import Counter
+
         severity_counts = Counter()
         for event in events:
             severity_counts[event.severity] += 1
 
         total = len(events)
         result = {}
-        severity_order = ['critical', 'high', 'medium', 'low', 'info']
+        severity_order = ["critical", "high", "medium", "low", "info"]
         for severity in severity_order:
             count = severity_counts.get(severity, 0)
             result[severity] = {
-                'count': count,
-                'percentage': round((count / total * 100) if total > 0 else 0, 1),
+                "count": count,
+                "percentage": round((count / total * 100) if total > 0 else 0, 1),
             }
 
         # Assertions
-        assert result['critical']['count'] == 25
-        assert result['high']['count'] == 90
-        assert result['medium']['count'] == 215
-        assert result['low']['count'] == 120
-        assert result['info']['count'] == 200
+        assert result["critical"]["count"] == 25
+        assert result["high"]["count"] == 90
+        assert result["medium"]["count"] == 215
+        assert result["low"]["count"] == 120
+        assert result["info"]["count"] == 200
 
     def test_connector_health_metrics(self, analytics_api):
         """Test connector health metrics endpoint"""
@@ -161,20 +160,20 @@ class TestAnalyticsAPI:
         # For now, test the expected response structure
 
         expected_fields = [
-            'overall_health',
-            'total_dlq_events',
-            'sources_with_issues',
-            'average_dlq_size',
-            'timestamp',
+            "overall_health",
+            "total_dlq_events",
+            "sources_with_issues",
+            "average_dlq_size",
+            "timestamp",
         ]
 
         # Simulate response
         response = {
-            'overall_health': 'GOOD',
-            'total_dlq_events': 0,
-            'sources_with_issues': [],
-            'average_dlq_size': 0,
-            'timestamp': datetime.utcnow().isoformat(),
+            "overall_health": "GOOD",
+            "total_dlq_events": 0,
+            "sources_with_issues": [],
+            "average_dlq_size": 0,
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
         for field in expected_fields:
@@ -191,9 +190,13 @@ class TestAnalyticsAPI:
 
         resolved = []
         for inv in investigations:
-            if inv.status.value == 'RESOLVED' and datetime.fromisoformat(inv.updated_at.replace('Z', '+00:00')) >= cutoff_date:
-                created = datetime.fromisoformat(inv.created_at.replace('Z', '+00:00'))
-                updated = datetime.fromisoformat(inv.updated_at.replace('Z', '+00:00'))
+            if (
+                inv.status.value == "RESOLVED"
+                and datetime.fromisoformat(inv.updated_at.replace("Z", "+00:00"))
+                >= cutoff_date
+            ):
+                created = datetime.fromisoformat(inv.created_at.replace("Z", "+00:00"))
+                updated = datetime.fromisoformat(inv.updated_at.replace("Z", "+00:00"))
                 mttr_minutes = (updated - created).total_seconds() / 60
                 resolved.append(mttr_minutes)
 
@@ -210,20 +213,22 @@ class TestAnalyticsAPI:
 
         # Get critical events
         events = api.event_store.get_all()
-        critical_count = len([e for e in events if e.severity.value == 'CRITICAL'])
+        critical_count = len([e for e in events if e.severity.value == "CRITICAL"])
 
         # Assertions
         assert critical_count == 25
         if critical_count > 10:
-            insights.append({
-                'type': 'warning',
-                'title': 'High number of critical events',
-                'description': f'{critical_count} critical events detected',
-                'impact': 'high',
-            })
+            insights.append(
+                {
+                    "type": "warning",
+                    "title": "High number of critical events",
+                    "description": f"{critical_count} critical events detected",
+                    "impact": "high",
+                }
+            )
 
         assert len(insights) > 0
-        assert insights[0]['type'] == 'warning'
+        assert insights[0]["type"] == "warning"
 
     def test_empty_event_store(self):
         """Test analytics with empty event store"""
@@ -241,6 +246,7 @@ class TestAnalyticsAPI:
         total = len(events)
 
         from collections import Counter
+
         source_counts = Counter()
         for event in events:
             source_counts[event.source] += 1
@@ -259,16 +265,17 @@ class TestAnalyticsAPI:
         events = api.event_store.get_all()
 
         from collections import Counter
+
         severity_counts = Counter()
         for event in events:
             severity_counts[event.severity] += 1
 
-        severity_order = ['critical', 'high', 'medium', 'low', 'info']
+        severity_order = ["critical", "high", "medium", "low", "info"]
         result = {}
 
         for severity in severity_order:
             count = severity_counts.get(severity, 0)
-            result[severity] = {'count': count}
+            result[severity] = {"count": count}
 
         # Verify order is maintained
         assert list(result.keys()) == severity_order
@@ -277,10 +284,10 @@ class TestAnalyticsAPI:
         """Test MTTR calculation with no resolved investigations"""
         import tempfile
         import os
-        
-        db_fd, db_path = tempfile.mkstemp(suffix='.db')
+
+        db_fd, db_path = tempfile.mkstemp(suffix=".db")
         os.close(db_fd)
-        
+
         store = InvestigationStore(db_path=db_path)
 
         # Add only open investigations
@@ -289,7 +296,7 @@ class TestAnalyticsAPI:
                 title=f"Open Investigation {i+1}",
                 description="Active investigation",
                 severity="high",
-                status="open"
+                status="open",
             )
 
         event_store = EventStore()
@@ -304,35 +311,41 @@ class TestAnalyticsAPI:
         api = AnalyticsAPI(event_store, investigation_store)
 
         events = api.event_store.get_all()
-        critical_count = len([e for e in events if e.severity == 'critical'])
+        critical_count = len([e for e in events if e.severity == "critical"])
 
         insights = []
         if critical_count > 10:
-            insights.append({
-                'type': 'warning',
-                'title': 'High number of critical events',
-                'description': f'{critical_count} critical events detected',
-                'impact': 'high',
-            })
+            insights.append(
+                {
+                    "type": "warning",
+                    "title": "High number of critical events",
+                    "description": f"{critical_count} critical events detected",
+                    "impact": "high",
+                }
+            )
 
         assert len(insights) == 1
-        assert 'warning' in [i['type'] for i in insights]
+        assert "warning" in [i["type"] for i in insights]
 
     def test_insights_with_open_investigations(self, event_store, investigation_store):
         """Test insights generated for open investigations"""
         api = AnalyticsAPI(event_store, investigation_store)
 
         investigations = api.inv_store.get_all()
-        open_investigations = len([i for i in investigations if i.status.value == 'OPEN'])
+        open_investigations = len(
+            [i for i in investigations if i.status.value == "OPEN"]
+        )
 
         insights = []
         if open_investigations > 2:
-            insights.append({
-                'type': 'info',
-                'title': f'{open_investigations} open investigations',
-                'description': f'Currently tracking {open_investigations} active investigations',
-                'impact': 'medium',
-            })
+            insights.append(
+                {
+                    "type": "info",
+                    "title": f"{open_investigations} open investigations",
+                    "description": f"Currently tracking {open_investigations} active investigations",
+                    "impact": "medium",
+                }
+            )
 
         assert len(insights) > 0
 
@@ -364,16 +377,18 @@ class TestAnalyticsIntegration:
         routes = [str(rule) for rule in app.url_map.iter_rules()]
 
         expected_endpoints = [
-            '/api/analytics/events/by-source',
-            '/api/analytics/events/by-severity',
-            '/api/analytics/connectors/health',
-            '/api/analytics/mttr',
-            '/api/analytics/insights',
+            "/api/analytics/events/by-source",
+            "/api/analytics/events/by-severity",
+            "/api/analytics/connectors/health",
+            "/api/analytics/mttr",
+            "/api/analytics/insights",
         ]
 
         for endpoint in expected_endpoints:
-            assert any(endpoint in route for route in routes), f"Endpoint {endpoint} not found"
+            assert any(
+                endpoint in route for route in routes
+            ), f"Endpoint {endpoint} not found"
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

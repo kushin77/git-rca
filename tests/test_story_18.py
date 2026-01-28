@@ -17,7 +17,7 @@ from src.services.event_linker import EventLinker
 def client():
     """Create Flask test client."""
     test_app = create_app()
-    test_app.config['TESTING'] = True
+    test_app.config["TESTING"] = True
     with test_app.test_client() as test_client:
         yield test_client
 
@@ -27,14 +27,14 @@ def investigation_store():
     """Create investigation store with temp database."""
     import tempfile
     import os
-    
-    fd, db_path = tempfile.mkstemp(suffix='.db')
+
+    fd, db_path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
-    
+
     store = InvestigationStore(db_path=db_path)
-    
+
     yield store
-    
+
     try:
         os.remove(db_path)
     except OSError:
@@ -45,435 +45,444 @@ def investigation_store():
 def test_investigation(investigation_store):
     """Create test investigation."""
     inv = investigation_store.create_investigation(
-        title='API Response Timeout',
-        description='POST /api/users returning 504',
-        severity='high',
-        status='open',
+        title="API Response Timeout",
+        description="POST /api/users returning 504",
+        severity="high",
+        status="open",
     )
     return inv
 
 
 class TestAutoLinkEventsEndpoint:
     """Test the auto-link events REST endpoint."""
-    
-    @patch('src.app.event_linker.auto_link_events')
-    def test_auto_link_endpoint_exists(self, mock_auto_link, client, test_investigation):
+
+    @patch("src.app.event_linker.auto_link_events")
+    def test_auto_link_endpoint_exists(
+        self, mock_auto_link, client, test_investigation
+    ):
         """Test /api/investigations/<id>/events/auto-link endpoint exists."""
         mock_auto_link.return_value = []
-        
+
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/events/auto-link'
+            f"/api/investigations/{test_investigation.id}/events/auto-link"
         )
-        
+
         # Should return success even with no events
         assert response.status_code == 201
-        assert 'linked_count' in response.json
-    
-    @patch('src.app.event_linker.auto_link_events')
-    def test_auto_link_with_time_window(self, mock_auto_link, client, test_investigation):
+        assert "linked_count" in response.json
+
+    @patch("src.app.event_linker.auto_link_events")
+    def test_auto_link_with_time_window(
+        self, mock_auto_link, client, test_investigation
+    ):
         """Test auto-link respects time_window_minutes parameter."""
         mock_auto_link.return_value = []
-        
+
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/events/auto-link?time_window_minutes=120'
+            f"/api/investigations/{test_investigation.id}/events/auto-link?time_window_minutes=120"
         )
-        
+
         assert response.status_code == 201
         mock_auto_link.assert_called_once()
         # Check that time_window_minutes was passed
         call_args = mock_auto_link.call_args
-        assert call_args[1]['time_window_minutes'] == 120
-    
-    @patch('src.app.event_linker.auto_link_events')
-    def test_auto_link_semantic_matching_param(self, mock_auto_link, client, test_investigation):
+        assert call_args[1]["time_window_minutes"] == 120
+
+    @patch("src.app.event_linker.auto_link_events")
+    def test_auto_link_semantic_matching_param(
+        self, mock_auto_link, client, test_investigation
+    ):
         """Test auto-link semantic_matching parameter."""
         mock_auto_link.return_value = []
-        
+
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/events/auto-link?semantic_matching=false'
+            f"/api/investigations/{test_investigation.id}/events/auto-link?semantic_matching=false"
         )
-        
+
         assert response.status_code == 201
         call_args = mock_auto_link.call_args
-        assert call_args[1]['semantic_matching'] is False
+        assert call_args[1]["semantic_matching"] is False
 
 
 class TestGetInvestigationEventsEndpoint:
     """Test the get investigation events endpoint."""
-    
+
     def test_get_events_endpoint(self, client):
         """Test GET /api/investigations/<id>/events endpoint."""
         # Create investigation via the app
         response = client.post(
-            '/api/investigations',
-            json={'title': 'Test Incident', 'severity': 'high'},
+            "/api/investigations",
+            json={"title": "Test Incident", "severity": "high"},
         )
-        inv_id = response.json['id']
-        
+        inv_id = response.json["id"]
+
         # Add a test event via the app
         client.post(
-            f'/api/investigations/{inv_id}/events/link',
+            f"/api/investigations/{inv_id}/events/link",
             json={
-                'event_id': 'git-123',
-                'event_type': 'push',
-                'source': 'git',
-                'message': 'Deploy API service',
-                'timestamp': datetime.utcnow().isoformat() + 'Z',
+                "event_id": "git-123",
+                "event_type": "push",
+                "source": "git",
+                "message": "Deploy API service",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             },
         )
-        
-        response = client.get(
-            f'/api/investigations/{inv_id}/events'
-        )
-        
+
+        response = client.get(f"/api/investigations/{inv_id}/events")
+
         assert response.status_code == 200
         data = response.json
-        assert 'events' in data
-        assert 'count' in data
-    
+        assert "events" in data
+        assert "count" in data
+
     def test_get_events_filter_by_source(self, client):
         """Test filtering events by source."""
         # Create investigation
         response = client.post(
-            '/api/investigations',
-            json={'title': 'Test', 'severity': 'high'},
+            "/api/investigations",
+            json={"title": "Test", "severity": "high"},
         )
-        inv_id = response.json['id']
-        
+        inv_id = response.json["id"]
+
         # Add events from different sources
         client.post(
-            f'/api/investigations/{inv_id}/events/link',
+            f"/api/investigations/{inv_id}/events/link",
             json={
-                'event_id': 'git-1',
-                'event_type': 'push',
-                'source': 'git',
-                'message': 'Git commit',
-                'timestamp': datetime.utcnow().isoformat() + 'Z',
+                "event_id": "git-1",
+                "event_type": "push",
+                "source": "git",
+                "message": "Git commit",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             },
         )
         client.post(
-            f'/api/investigations/{inv_id}/events/link',
+            f"/api/investigations/{inv_id}/events/link",
             json={
-                'event_id': 'ci-1',
-                'event_type': 'build',
-                'source': 'ci',
-                'message': 'Build job',
-                'timestamp': datetime.utcnow().isoformat() + 'Z',
+                "event_id": "ci-1",
+                "event_type": "build",
+                "source": "ci",
+                "message": "Build job",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             },
         )
-        
-        response = client.get(
-            f'/api/investigations/{inv_id}/events?source=git'
-        )
-        
+
+        response = client.get(f"/api/investigations/{inv_id}/events?source=git")
+
         assert response.status_code == 200
         data = response.json
         # Should only have git events
-        assert all(evt['source'] == 'git' for evt in data['events'])
-    
+        assert all(evt["source"] == "git" for evt in data["events"])
+
     def test_get_events_filter_by_type(self, client):
         """Test filtering events by type."""
         # Create investigation
         response = client.post(
-            '/api/investigations',
-            json={'title': 'Test', 'severity': 'high'},
+            "/api/investigations",
+            json={"title": "Test", "severity": "high"},
         )
-        inv_id = response.json['id']
-        
+        inv_id = response.json["id"]
+
         # Add events of different types
         client.post(
-            f'/api/investigations/{inv_id}/events/link',
+            f"/api/investigations/{inv_id}/events/link",
             json={
-                'event_id': 'event-1',
-                'event_type': 'push',
-                'source': 'git',
-                'message': 'Push',
-                'timestamp': datetime.utcnow().isoformat() + 'Z',
+                "event_id": "event-1",
+                "event_type": "push",
+                "source": "git",
+                "message": "Push",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             },
         )
         client.post(
-            f'/api/investigations/{inv_id}/events/link',
+            f"/api/investigations/{inv_id}/events/link",
             json={
-                'event_id': 'event-2',
-                'event_type': 'pull_request',
-                'source': 'git',
-                'message': 'PR',
-                'timestamp': datetime.utcnow().isoformat() + 'Z',
+                "event_id": "event-2",
+                "event_type": "pull_request",
+                "source": "git",
+                "message": "PR",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             },
         )
-        
-        response = client.get(
-            f'/api/investigations/{inv_id}/events?event_type=push'
-        )
-        
+
+        response = client.get(f"/api/investigations/{inv_id}/events?event_type=push")
+
         assert response.status_code == 200
         data = response.json
-        assert all(evt['event_type'] == 'push' for evt in data['events'])
+        assert all(evt["event_type"] == "push" for evt in data["events"])
 
 
 class TestManualEventLinkingEndpoint:
     """Test manual event linking endpoint."""
-    
+
     def test_link_event_endpoint(self, client, investigation_store, test_investigation):
         """Test POST /api/investigations/<id>/events/link endpoint."""
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/events/link',
+            f"/api/investigations/{test_investigation.id}/events/link",
             json={
-                'event_id': 'manual-1',
-                'event_type': 'alert',
-                'source': 'monitoring',
-                'message': 'High CPU usage detected',
-                'timestamp': datetime.utcnow().isoformat() + 'Z',
+                "event_id": "manual-1",
+                "event_type": "alert",
+                "source": "monitoring",
+                "message": "High CPU usage detected",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             },
         )
-        
+
         assert response.status_code == 201
         data = response.json
-        assert data['event_id'] == 'manual-1'
-        assert data['source'] == 'monitoring'
-    
+        assert data["event_id"] == "manual-1"
+        assert data["source"] == "monitoring"
+
     def test_link_event_invalid_investigation(self, client):
         """Test linking event to non-existent investigation."""
         response = client.post(
-            '/api/investigations/invalid-id/events/link',
-            json={'event_id': 'test', 'event_type': 'test', 'source': 'test', 'message': 'test'},
+            "/api/investigations/invalid-id/events/link",
+            json={
+                "event_id": "test",
+                "event_type": "test",
+                "source": "test",
+                "message": "test",
+            },
         )
-        
+
         assert response.status_code == 400
 
 
 class TestEventSearchEndpoint:
     """Test event search endpoint."""
-    
-    @patch('src.app.event_linker.search_events')
+
+    @patch("src.app.event_linker.search_events")
     def test_search_events_endpoint(self, mock_search, client):
         """Test GET /api/events/search endpoint."""
         mock_search.return_value = [
             {
-                'source': 'git',
-                'type': 'push',
-                'message': 'Deploy API',
-                'timestamp': datetime.utcnow().isoformat(),
+                "source": "git",
+                "type": "push",
+                "message": "Deploy API",
+                "timestamp": datetime.utcnow().isoformat(),
             }
         ]
-        
-        response = client.get('/api/events/search?query=deploy')
-        
+
+        response = client.get("/api/events/search?query=deploy")
+
         assert response.status_code == 200
         data = response.json
-        assert 'results' in data
-        assert 'count' in data
-        assert data['query'] == 'deploy'
-    
+        assert "results" in data
+        assert "count" in data
+        assert data["query"] == "deploy"
+
     def test_search_events_missing_query(self, client):
         """Test search without query parameter."""
-        response = client.get('/api/events/search')
-        
+        response = client.get("/api/events/search")
+
         assert response.status_code == 400
-        assert 'error' in response.json
-    
-    @patch('src.app.event_linker.search_events')
+        assert "error" in response.json
+
+    @patch("src.app.event_linker.search_events")
     def test_search_with_filters(self, mock_search, client):
         """Test search with source and type filters."""
         mock_search.return_value = []
-        
-        response = client.get('/api/events/search?query=test&source=git&event_type=push')
-        
+
+        response = client.get(
+            "/api/events/search?query=test&source=git&event_type=push"
+        )
+
         assert response.status_code == 200
         # Verify search was called with filters
         call_args = mock_search.call_args
-        assert call_args[1]['source'] == 'git'
-        assert call_args[1]['event_type'] == 'push'
+        assert call_args[1]["source"] == "git"
+        assert call_args[1]["event_type"] == "push"
 
 
 class TestEventSuggestionsEndpoint:
     """Test event suggestions endpoint."""
-    
-    @patch('src.app.event_linker.suggest_events')
+
+    @patch("src.app.event_linker.suggest_events")
     def test_suggest_events_endpoint(self, mock_suggest, client, test_investigation):
         """Test GET /api/investigations/<id>/events/suggestions endpoint."""
         mock_suggest.return_value = [
             {
-                'source': 'git',
-                'event_id': 'git-1',
-                'type': 'push',
-                'message': 'Suggested event',
-                'relevance': 'high',
+                "source": "git",
+                "event_id": "git-1",
+                "type": "push",
+                "message": "Suggested event",
+                "relevance": "high",
             }
         ]
-        
+
         response = client.get(
-            f'/api/investigations/{test_investigation.id}/events/suggestions'
+            f"/api/investigations/{test_investigation.id}/events/suggestions"
         )
-        
+
         assert response.status_code == 200
         data = response.json
-        assert 'suggestions' in data
-        assert 'count' in data
+        assert "suggestions" in data
+        assert "count" in data
 
 
 class TestAnnotationThreading:
     """Test enhanced annotation threading functionality."""
-    
-    def test_add_top_level_annotation(self, client, investigation_store, test_investigation):
+
+    def test_add_top_level_annotation(
+        self, client, investigation_store, test_investigation
+    ):
         """Test adding a top-level annotation."""
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/annotations',
+            f"/api/investigations/{test_investigation.id}/annotations",
             json={
-                'author': 'alice@example.com',
-                'text': 'Initial observation about the incident',
+                "author": "alice@example.com",
+                "text": "Initial observation about the incident",
             },
         )
-        
+
         assert response.status_code == 201
         data = response.json
-        assert data['author'] == 'alice@example.com'
-        assert data['parent_annotation_id'] is None
-    
-    def test_add_reply_annotation(self, client, investigation_store, test_investigation):
+        assert data["author"] == "alice@example.com"
+        assert data["parent_annotation_id"] is None
+
+    def test_add_reply_annotation(
+        self, client, investigation_store, test_investigation
+    ):
         """Test adding a reply to an annotation."""
         # Create parent annotation
         parent = investigation_store.add_annotation(
             investigation_id=test_investigation.id,
-            author='alice@example.com',
-            text='Initial observation',
+            author="alice@example.com",
+            text="Initial observation",
         )
-        
+
         # Add reply
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/annotations',
+            f"/api/investigations/{test_investigation.id}/annotations",
             json={
-                'author': 'bob@example.com',
-                'text': 'Thanks for the observation, I found the root cause',
-                'parent_annotation_id': parent.id,
+                "author": "bob@example.com",
+                "text": "Thanks for the observation, I found the root cause",
+                "parent_annotation_id": parent.id,
             },
         )
-        
+
         assert response.status_code == 201
         data = response.json
-        assert data['parent_annotation_id'] == parent.id
-    
+        assert data["parent_annotation_id"] == parent.id
+
     def test_get_annotations_with_threading(self, client):
         """Test getting annotations preserves threading."""
         # Create investigation
         response = client.post(
-            '/api/investigations',
-            json={'title': 'Test', 'severity': 'high'},
+            "/api/investigations",
+            json={"title": "Test", "severity": "high"},
         )
-        inv_id = response.json['id']
-        
+        inv_id = response.json["id"]
+
         # Create parent annotation
         response1 = client.post(
-            f'/api/investigations/{inv_id}/annotations',
-            json={'author': 'alice@example.com', 'text': 'Observation 1'},
+            f"/api/investigations/{inv_id}/annotations",
+            json={"author": "alice@example.com", "text": "Observation 1"},
         )
         assert response1.status_code == 201
-        parent_id = response1.json['id']
-        
+        parent_id = response1.json["id"]
+
         # Create reply
         response2 = client.post(
-            f'/api/investigations/{inv_id}/annotations',
+            f"/api/investigations/{inv_id}/annotations",
             json={
-                'author': 'bob@example.com',
-                'text': 'Reply to observation 1',
-                'parent_annotation_id': parent_id,
+                "author": "bob@example.com",
+                "text": "Reply to observation 1",
+                "parent_annotation_id": parent_id,
             },
         )
         assert response2.status_code == 201
-        
-        response = client.get(
-            f'/api/investigations/{inv_id}/annotations'
-        )
-        
+
+        response = client.get(f"/api/investigations/{inv_id}/annotations")
+
         assert response.status_code == 200
         data = response.json
         # At least the parent should exist
-        assert data['count'] >= 1
-        
+        assert data["count"] >= 1
+
         # Verify parent exists
-        annotations = data['annotations']
-        parent_ann = next((a for a in annotations if a['id'] == parent_id), None)
+        annotations = data["annotations"]
+        parent_ann = next((a for a in annotations if a["id"] == parent_id), None)
         assert parent_ann is not None
 
 
 class TestStory18Integration:
     """Integration tests for Story #18 features."""
-    
-    @patch('src.services.event_linker.git_connector.load_events')
-    @patch('src.services.event_linker.ci_connector.load_events')
-    def test_event_linking_workflow(self, mock_ci, mock_git, client, investigation_store):
+
+    @patch("src.services.event_linker.git_connector.load_events")
+    @patch("src.services.event_linker.ci_connector.load_events")
+    def test_event_linking_workflow(
+        self, mock_ci, mock_git, client, investigation_store
+    ):
         """Test complete event linking workflow."""
         # Create investigation
         inv = investigation_store.create_investigation(
-            title='Database Connection Error',
-            status='open',
+            title="Database Connection Error",
+            status="open",
         )
-        
+
         # Mock events from connectors
         now = datetime.utcnow()
         mock_git.return_value = [
             {
-                'id': 'git-1',
-                'type': 'push',
-                'message': 'Database connection pool increased',
-                'timestamp': now.isoformat() + 'Z',
-                'repo': 'backend',
+                "id": "git-1",
+                "type": "push",
+                "message": "Database connection pool increased",
+                "timestamp": now.isoformat() + "Z",
+                "repo": "backend",
             },
         ]
         mock_ci.return_value = [
             {
-                'id': 'ci-1',
-                'type': 'build',
-                'message': 'Deploy to production',
-                'timestamp': now.isoformat() + 'Z',
-                'job': 'deploy-job',
+                "id": "ci-1",
+                "type": "build",
+                "message": "Deploy to production",
+                "timestamp": now.isoformat() + "Z",
+                "job": "deploy-job",
             },
         ]
-        
+
         # Call auto-link endpoint
         response = client.post(
-            f'/api/investigations/{inv.id}/events/auto-link?semantic_matching=true'
+            f"/api/investigations/{inv.id}/events/auto-link?semantic_matching=true"
         )
-        
+
         assert response.status_code == 201
         data = response.json
-        assert data['linked_count'] >= 0  # May be 0 if semantic matching doesn't match
-    
+        assert data["linked_count"] >= 0  # May be 0 if semantic matching doesn't match
+
     def test_annotation_comment_thread(self, client):
         """Test creating and retrieving annotation threads."""
         # Create investigation
         response = client.post(
-            '/api/investigations',
-            json={'title': 'Service Outage', 'status': 'open'},
+            "/api/investigations",
+            json={"title": "Service Outage", "status": "open"},
         )
-        inv_id = response.json['id']
-        
+        inv_id = response.json["id"]
+
         # Create comment thread
         response1 = client.post(
-            f'/api/investigations/{inv_id}/annotations',
-            json={'author': 'engineer1', 'text': 'What happened?'},
+            f"/api/investigations/{inv_id}/annotations",
+            json={"author": "engineer1", "text": "What happened?"},
         )
         assert response1.status_code == 201
-        parent_id = response1.json['id']
-        
+        parent_id = response1.json["id"]
+
         # Reply to comment
         response2 = client.post(
-            f'/api/investigations/{inv_id}/annotations',
+            f"/api/investigations/{inv_id}/annotations",
             json={
-                'author': 'engineer2',
-                'text': 'Database went down',
-                'parent_annotation_id': parent_id,
+                "author": "engineer2",
+                "text": "Database went down",
+                "parent_annotation_id": parent_id,
             },
         )
         assert response2.status_code == 201
-        
+
         # Get all annotations
-        response3 = client.get(
-            f'/api/investigations/{inv_id}/annotations'
-        )
+        response3 = client.get(f"/api/investigations/{inv_id}/annotations")
         assert response3.status_code == 200
-        assert response3.json['count'] >= 1
+        assert response3.json["count"] >= 1
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
