@@ -1,0 +1,71 @@
+{
+  "milestones": [
+    {"title": "MVP (30 days)", "description": "Canvas prototype, data model, basic security hardening"},
+    {"title": "Phase 2 (90 days)", "description": "Auth/RBAC, observability, CI/CD hardening"}
+  ],
+  "issues": [
+    {
+      "title": "[P0] Harden secrets & sensitive data handling",
+      "body": "Epic: Security, Compliance & Privacy\n\nOwner: Security lead\n\nAcceptance: No plaintext secrets in repo; secrets detection CI job; critical secrets rotated.\n\nTasks:\n- Run repo secrets scan (git-secrets / trufflehog)\n- Add secrets detection job to CI\n- Remove or rotate any exposed secrets\n",
+      "labels": ["security","p0","infra"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    },
+    {
+      "title": "[P0] Enable auth/RBAC and production-ready config",
+      "body": "Epic: Core Platform & Architecture\n\nOwner: Platform\n\nAcceptance: API protected by token-based auth; config from env and validated; fail-safe defaults.\n\nTasks:\n- Add token-based auth middleware to API\n- Move secrets/config to env and validate on startup\n- Document secure defaults and deployment checklist\n",
+      "labels": ["core","p0"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    },
+    {
+      "title": "[P0] CI/CD gating + reproducible builds",
+      "body": "Epic: DevOps / CI/CD\n\nOwner: DevOps\n\nAcceptance: PRs blocked on tests; artifacts versioned; rollback strategy documented.\n\nTasks:\n- Enforce PR checks for tests\n- Version and store build artifacts\n- Add rollback instructions to deployment docs\n",
+      "labels": ["ci","p0","infra"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    },
+    {
+      "title": "[P1] Implement Investigation Canvas UI Prototype",
+      "body": "Epic: RCA Workflow & UX\n\nOwner: Frontend/Product\n\nAcceptance: Clickable prototype; two pilot engineers validate flow.\n",
+      "labels": ["ux","p1","story"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    },
+    {
+      "title": "[P1] Build Investigations Data Model & API",
+      "body": "Epic: Data & Integrations\n\nOwner: Backend\n\nAcceptance: Read/write investigations; link events; unit tests cover model and endpoints.\n",
+      "labels": ["data","p1","story"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    },
+    {
+      "title": "[P1] Security red-team & threat model verification",
+      "body": "Epic: Security, Compliance & Privacy\n\nOwner: Security\n\nAcceptance: Threat model validated; high-risk issues remedied or triaged.\n",
+      "labels": ["security","p1"],
+      "assignees": [],
+      "milestone": "Phase 2 (90 days)"
+    },
+    {
+      "title": "[P2] Observability hookup: tracing, metrics, dashboards",
+      "body": "Epic: Observability, Telemetry & Analytics\n\nOwner: SRE\n\nAcceptance: Traces for requests; basic dashboards + alert for error rate.\n",
+      "labels": ["observability","p2","infra"],
+      "assignees": [],
+      "milestone": "Phase 2 (90 days)"
+    },
+    {
+      "title": "[P1] Persist notification preferences to durable store",
+      "body": "Epic: Core Platform & Architecture\n\nOwner: Backend\n\nAcceptance: Notification preferences migrated from in-memory to DB; unsubscribe tokens persisted; unit tests added.\n",
+      "labels": ["core","p1","story"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    },
+    {
+      "title": "[P0] Remove committed virtualenv and sanitize docs placeholders",
+      "body": "Epic: Security, Compliance & Privacy\n\nOwner: Repo Admin\n\nAcceptance: `.venv/` removed from repo, `.gitignore` updated, example secrets in docs replaced with REDACTED markers, and PRs include a check preventing .venv commits.\n",
+      "labels": ["security","p0","infra"],
+      "assignees": [],
+      "milestone": "MVP (30 days)"
+    }
+  ]
+}

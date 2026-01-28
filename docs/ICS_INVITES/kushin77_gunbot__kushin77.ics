@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Git RCA//Investigation Canvas Pilot//EN
+BEGIN:VEVENT
+UID:kushin77_gunbot-kushin77@git-rca
+DTSTAMP:20260127T000000Z
+DTSTART:20260203T160000Z
+DTEND:20260203T164500Z
+SUMMARY:Investigation Canvas Pilot (45 minutes)
+DESCRIPTION:Investigation Canvas pilot session. Reply in the issue to confirm attendance.
+Issue: https://github.com/kushin77/gunbot/issues/2
+Respondent: kushin77
+Notes: Reminder: You were invited to a short pilot session for the Investigation Canvas. If interested, please reply to the invitation issue with your RSVP (Yes/No/Maybe) and preferred times. See: https://github.com/kushin77/git-rca-workspace/docs/PILOT_RSVP_TEMPLATE.md
+LOCATION:Virtual — https://meet.example.com/INVITE-CODE
+ORGANIZER;CN=Git RCA Team:mailto:host@example.com
+ATTENDEE;CN=kushin77;RSVP=TRUE:mailto:kushin77@example.invalid
+END:VEVENT
+END:VCALENDAR

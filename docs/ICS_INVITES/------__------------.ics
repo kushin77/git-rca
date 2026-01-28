@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Git RCA//Investigation Canvas Pilot//EN
+BEGIN:VEVENT
+UID:-------------------@git-rca
+DTSTAMP:20260127T000000Z
+DTSTART:20260203T160000Z
+DTEND:20260203T164500Z
+SUMMARY:Investigation Canvas Pilot (45 minutes)
+DESCRIPTION:Investigation Canvas pilot session. Reply in the issue to confirm attendance.
+Issue: -----------
+Respondent: ------------
+Notes: ---------
+LOCATION:Virtual — https://meet.example.com/INVITE-CODE
+ORGANIZER;CN=Git RCA Team:mailto:host@example.com
+ATTENDEE;CN=------------;RSVP=TRUE:mailto:------------@example.invalid
+END:VEVENT
+END:VCALENDAR
