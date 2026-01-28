@@ -323,7 +323,7 @@ class TestAnalyticsAPI:
         api = AnalyticsAPI(event_store, investigation_store)
 
         investigations = api.inv_store.get_all()
-        open_investigations = len([i for i in investigations if i.status.value == 'OPEN'])
+        open_investigations = len([i for i in investigations if i.status.value == 'open'])
 
         insights = []
         if open_investigations > 2:

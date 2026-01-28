@@ -11,6 +11,15 @@ from datetime import datetime, timedelta
 from src.app import create_app
 from src.store.investigation_store import InvestigationStore
 from src.services.event_linker import EventLinker
+from src.middleware.auth import get_token_validator
+
+
+@pytest.fixture
+def auth_headers():
+    """Generate authentication headers for tests."""
+    validator = get_token_validator()
+    token = validator.generate_token('test_user', 'engineer')
+    return {'Authorization': f'Bearer {token}'}
 
 
 @pytest.fixture
@@ -315,7 +324,7 @@ class TestEventSuggestionsEndpoint:
 class TestAnnotationThreading:
     """Test enhanced annotation threading functionality."""
     
-    def test_add_top_level_annotation(self, client, investigation_store, test_investigation):
+    def test_add_top_level_annotation(self, client, investigation_store, test_investigation, auth_headers):
         """Test adding a top-level annotation."""
         response = client.post(
             f'/api/investigations/{test_investigation.id}/annotations',
@@ -323,6 +332,7 @@ class TestAnnotationThreading:
                 'author': 'alice@example.com',
                 'text': 'Initial observation about the incident',
             },
+            headers=auth_headers
         )
         
         assert response.status_code == 201
@@ -330,7 +340,7 @@ class TestAnnotationThreading:
         assert data['author'] == 'alice@example.com'
         assert data['parent_annotation_id'] is None
     
-    def test_add_reply_annotation(self, client, investigation_store, test_investigation):
+    def test_add_reply_annotation(self, client, investigation_store, test_investigation, auth_headers):
         """Test adding a reply to an annotation."""
         # Create parent annotation
         parent = investigation_store.add_annotation(
@@ -347,6 +357,7 @@ class TestAnnotationThreading:
                 'text': 'Thanks for the observation, I found the root cause',
                 'parent_annotation_id': parent.id,
             },
+            headers=auth_headers
         )
         
         assert response.status_code == 201

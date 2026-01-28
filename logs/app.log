@@ -1696,3 +1696,113 @@
 {"timestamp": "2026-01-28T18:45:05.162434+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
 {"timestamp": "2026-01-28T18:46:10.969980+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
 {"timestamp": "2026-01-28T18:46:11.055986+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:48:50.866859+00:00", "level": "INFO", "logger": "app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:48:50.924661+00:00", "level": "INFO", "logger": "app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:48:54.036877+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:48:54.103953+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:48:54.736635+00:00", "level": "INFO", "logger": "src.app", "message": "GET /", "request_id": "1769626134736", "method": "GET", "path": "/", "status_code": 200, "latency_ms": 0.05, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:02.293065+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:02.316868+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:13.389897+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/investigations/inv-001/annotations", "request_id": "1769626153388", "user_id": "test_user", "user_role": "engineer", "method": "POST", "path": "/api/investigations/inv-001/annotations", "status_code": 201, "latency_ms": 1.47, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:13.652567+00:00", "level": "INFO", "logger": "test_logging", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:13.653512+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /test", "request_id": "1769626153653", "method": "GET", "path": "/test", "status_code": 200, "latency_ms": 0.04, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:13.757702+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /slow", "request_id": "1769626153656", "method": "GET", "path": "/slow", "status_code": 200, "latency_ms": 100.63, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:16.254977+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.265954+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.280967+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.291813+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.310010+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.343881+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.374360+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.386990+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.407148+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.419513+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.444021+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.456908+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.474023+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.487013+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.502909+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.513520+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.529308+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.541059+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.560718+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.584534+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.613292+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.624848+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.642581+00:00", "level": "INFO", "logger": "src.app", "message": "Admin token list query", "request_id": "1769626156641", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "filter_user": null, "limit": 50, "offset": 0, "result_count": 50, "total_count": 336}
+{"timestamp": "2026-01-28T18:49:16.642855+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/tokens", "request_id": "1769626156641", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/tokens", "status_code": 200, "latency_ms": 0.84, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:16.644269+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.655962+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.672035+00:00", "level": "INFO", "logger": "src.app", "message": "Admin token list query", "request_id": "1769626156671", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "filter_user": null, "limit": 10, "offset": 0, "result_count": 10, "total_count": 336}
+{"timestamp": "2026-01-28T18:49:16.672215+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/tokens", "request_id": "1769626156671", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/tokens", "status_code": 200, "latency_ms": 0.49, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:16.673635+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.684827+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.702103+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.713368+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.731087+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769626156728", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user_123", "reason": "password_reset", "revoked_count": 3}
+{"timestamp": "2026-01-28T18:49:16.731236+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user_123/revoke-all", "request_id": "1769626156728", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user_123/revoke-all", "status_code": 200, "latency_ms": 2.16, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:16.732694+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.744151+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.761019+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769626156760", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.13, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:16.762436+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.773809+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.810870+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.824365+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.849368+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.864505+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:16.891178+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:16.913342+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.068859+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.081851+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.103162+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.116478+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.148674+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.160410+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.180097+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.193822+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.229278+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.240743+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.256270+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.267420+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.287926+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.320731+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.345274+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769626157344", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.2, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:17.351268+00:00", "level": "WARNING", "logger": "src.app", "message": "Admin bulk session revocation", "request_id": "1769626157345", "user_id": "admin_user", "user_role": "admin", "admin_id": "admin_user", "target_user_id": "test_user", "reason": "test", "revoked_count": 5}
+{"timestamp": "2026-01-28T18:49:17.351502+00:00", "level": "INFO", "logger": "src.app", "message": "POST /api/admin/users/test_user/revoke-all", "request_id": "1769626157345", "user_id": "admin_user", "user_role": "admin", "method": "POST", "path": "/api/admin/users/test_user/revoke-all", "status_code": 200, "latency_ms": 5.61, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:17.352311+00:00", "level": "INFO", "logger": "src.app", "message": "GET /api/admin/revocation/stats", "request_id": "1769626157351", "user_id": "admin_user", "user_role": "admin", "method": "GET", "path": "/api/admin/revocation/stats", "status_code": 200, "latency_ms": 0.19, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T18:49:17.361490+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.391444+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.430238+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.441657+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.464717+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.477334+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.501651+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.513000+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.537147+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.548333+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.640276+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.651614+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.667764+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.679571+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.704780+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.715770+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.733786+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.745431+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.761107+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.771805+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.787023+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.798578+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.813969+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.824806+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.848437+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.860034+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.880926+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.891695+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.914883+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.926464+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.944049+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.954990+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:17.975830+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:17.988076+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
+{"timestamp": "2026-01-28T18:49:52.637486+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T18:49:52.709222+00:00", "level": "INFO", "logger": "src.app", "message": "Observability: /metrics endpoint registered"}
