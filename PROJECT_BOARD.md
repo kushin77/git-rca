@@ -9,10 +9,12 @@
 ## Project Board Structure
 
 ### Swimlanes
+
 - **MVP (30 days)**: Critical path issues for production launch
 - **Phase 2 (90 days)**: Enhancement, scaling, UX improvements
 
 ### Columns
+
 1. **Backlog** — Ready for triage
 2. **Triage** — Waiting on clarification or resource assignment
 3. **In Progress** — Active development
@@ -26,7 +28,7 @@
 ### P0 Issues (Blockers)
 
 | Issue | Title | Hours | Owner | Status | Priority |
-|-------|-------|-------|-------|--------|----------|
+| --- | --- | --- | --- | --- | --- |
 | #9 | [P0] Harden secrets & sensitive data handling | 2-3 | TBD | Backlog | CRITICAL |
 | #10 | [P0] Enable auth/RBAC and production-ready config | 6-8 | TBD | Backlog | CRITICAL |
 | #11 | [P0] CI/CD gating + reproducible builds | 4-6 | TBD | Backlog | CRITICAL |
@@ -39,7 +41,7 @@
 ### P1 Issues (High Priority)
 
 | Issue | Title | Hours | Owner | Status |
-|-------|-------|-------|-------|--------|
+| --- | --- | --- | --- | --- |
 | #12 | [P1] Implement Investigation Canvas UI Prototype | 8-10 | TBD | Backlog |
 | #13 | [P1] Build Investigations Data Model & API | 6-8 | TBD | Backlog |
 | #14 | [P1] Security red-team & threat model verification | 4-6 | TBD | Backlog |
@@ -53,7 +55,7 @@
 ## Phase 2 Swimlane (90 Days, Post-MVP)
 
 | Issue | Title | Hours | Status |
-|-------|-------|-------|--------|
+| --- | --- | --- | --- |
 | #15 | [P2] Observability hookup: dashboards & alerts | 8-10 | Backlog |
 | (Future) | Event sourcing & immutable audit log | 16-20 | Backlog |
 | (Future) | GraphQL API support | 12-16 | Backlog |
@@ -63,7 +65,7 @@
 
 ## Dependency Graph
 
-```
+```mermaid
 #9 (Secrets)
   ↓
 #36 (Remove .venv)
@@ -88,6 +90,7 @@ PRODUCTION READY
 ### Issue #10: Enable Auth/RBAC
 
 **Acceptance Criteria**:
+
 - All API endpoints require valid Bearer token.
 - Token validation fails fast (401 Unauthorized).
 - Role-based access control (admin, engineer, viewer).
@@ -95,6 +98,7 @@ PRODUCTION READY
 - API docs updated.
 
 **Sub-Tasks** (4 hours each):
+
 1. **Design token schema** (2h)
    - JWT structure: sub (user_id), role, iat, exp, aud
    - Storage: hardcoded for MVP (env var), later move to DB
@@ -127,26 +131,29 @@ PRODUCTION READY
 ### Issue #42: Persist Notification Preferences
 
 **Acceptance Criteria**:
+
 - Preferences persist across app restarts.
 - Unsubscribe token is unique and time-limited.
 - User can re-subscribe (optional link in email).
 - All changes logged with timestamp and user_id.
 
 **Sub-Tasks** (5 hours):
+
 1. **Schema update** (1h)
    - Add `notification_preferences` table:
-     ```sql
-     CREATE TABLE notification_preferences (
-       id TEXT PRIMARY KEY,
-       user_id TEXT NOT NULL,
-       unsubscribe_token TEXT UNIQUE,
-       subscribed_to_replies BOOLEAN,
-       subscribed_to_mentions BOOLEAN,
-       created_at TIMESTAMP,
-       updated_at TIMESTAMP,
-       FOREIGN KEY (user_id) REFERENCES users(id)
-     );
-     ```
+
+   ```sql
+   CREATE TABLE notification_preferences (
+     id TEXT PRIMARY KEY,
+     user_id TEXT NOT NULL,
+     unsubscribe_token TEXT UNIQUE,
+     subscribed_to_replies BOOLEAN,
+     subscribed_to_mentions BOOLEAN,
+     created_at TIMESTAMP,
+     updated_at TIMESTAMP,
+     FOREIGN KEY (user_id) REFERENCES users(id)
+   );
+   ```
 
 2. **Migrate EmailNotifier class** (2h)
    - Remove in-memory dict
@@ -167,12 +174,14 @@ PRODUCTION READY
 ### Issue #11: CI/CD Gating + Reproducible Builds
 
 **Acceptance Criteria**:
+
 - All PRs must pass tests + linting before merge.
 - Secrets detection blocks commits with tokens.
 - `.venv/` and `*.egg-info` blocked.
 - Build artifacts are reproducible (same commit = same binary).
 
 **Sub-Tasks** (6 hours):
+
 1. **Create GitHub Actions workflow** (2h)
    - `.github/workflows/test-and-lint.yml`
    - Steps: install deps, lint (flake8), test (pytest), coverage (>80%)
@@ -203,12 +212,14 @@ PRODUCTION READY
 ### Issue #41: Observability (Logging, Metrics, Tracing)
 
 **Acceptance Criteria**:
+
 - All API requests logged with user, method, path, status, latency.
 - Structured JSON logging to stderr/file.
 - Optional OpenTelemetry integration (Phase 2).
 - SLI/SLO targets defined and tracked.
 
 **Sub-Tasks** (8 hours):
+
 1. **Add structured logging** (2h)
    - Import `logging`, configure JSON formatter
    - Log on each request: `user_id, method, path, status, latency_ms`
@@ -241,22 +252,26 @@ PRODUCTION READY
 ## Execution Timeline
 
 ### Week 1
+
 - Start Issue #9 (Secrets) + #36 (Remove .venv)
 - Complete Issue #11 (CI/CD gating) - enables parallel work
 - Estimated: 7-8 hours
 
 ### Week 2
+
 - Complete Issue #10 (Auth/RBAC) - blocking issue
 - Start Issue #12 (UI Canvas)
 - Estimated: 8-10 hours
 
 ### Week 3
+
 - Complete Issue #12 (UI Canvas)
 - Complete Issue #13 (Data Model & API)
 - Start Issue #41 (Observability)
 - Estimated: 12-14 hours
 
 ### Week 4
+
 - Complete Issue #42 (Persist Prefs)
 - Complete Issue #41 (Observability)
 - Complete Issue #14 (Security Review)
