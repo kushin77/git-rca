@@ -12,6 +12,8 @@ Tests cover:
 """
 
 import pytest
+import tempfile
+import os
 from datetime import datetime
 from src.services.email_notifier import EmailNotifier, NotificationPreferences
 
@@ -64,12 +66,22 @@ class TestEmailNotifier:
     
     @pytest.fixture
     def notifier(self):
-        """Create email notifier instance."""
-        return EmailNotifier(
+        """Create email notifier instance with temporary database."""
+        fd, temp_db = tempfile.mkstemp(suffix='.db')
+        os.close(fd)
+        
+        notifier = EmailNotifier(
             smtp_host='smtp.test.local',
             smtp_port=587,
             from_email='test@example.com',
+            db_path=temp_db,
         )
+        
+        yield notifier
+        
+        # Cleanup
+        if os.path.exists(temp_db):
+            os.unlink(temp_db)
     
     # Preferences Management
     

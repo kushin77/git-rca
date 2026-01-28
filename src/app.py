@@ -29,12 +29,13 @@ def create_app(db_path: str = 'investigations.db'):
     # Initialize event linker
     event_linker = EventLinker(investigation_store)
 
-    # Initialize email notifier
+    # Initialize email notifier (with same database for preferences persistence)
     email_notifier = EmailNotifier(
         smtp_host='localhost',
         smtp_port=587,
         from_email='noreply@git-rca.local',
         from_name='Git RCA Workspace',
+        db_path=db_path,  # Share database with investigation store
     )
     
     # Store in app context for access in routes

@@ -13,7 +13,7 @@ This service integrates with the investigation system to notify users when:
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import List, Optional, Dict, Any
 import json
 import uuid
@@ -39,8 +39,8 @@ class NotificationPreferences:
         self.notify_on_milestone = notify_on_milestone
         self.digest_frequency = digest_frequency
         self.unsubscribe_token = unsubscribe_token or str(uuid.uuid4())
-        self.created_at = datetime.utcnow().isoformat()
-        self.updated_at = datetime.utcnow().isoformat()
+        self.created_at = datetime.now(UTC).isoformat()
+        self.updated_at = datetime.now(UTC).isoformat()
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -67,6 +67,7 @@ class EmailNotifier:
         smtp_password: Optional[str] = None,
         from_email: str = 'noreply@git-rca.local',
         from_name: str = 'Git RCA Workspace',
+        db_path: str = 'investigations.db',
     ):
         """Initialize email notifier.
         
@@ -77,6 +78,7 @@ class EmailNotifier:
             smtp_password: SMTP password (optional)
             from_email: From email address
             from_name: From display name
+            db_path: Path to SQLite database file for preferences persistence
         """
         self.smtp_host = smtp_host
         self.smtp_port = smtp_port
@@ -85,19 +87,20 @@ class EmailNotifier:
         self.from_email = from_email
         self.from_name = from_name
         
-        # Notification preferences storage (in-memory for now, could be database)
-        self.preferences: Dict[str, NotificationPreferences] = {}
+        # Import preferences store here to avoid circular imports
+        from src.store.notification_preferences_store import NotificationPreferencesStore
+        self.preferences_store = NotificationPreferencesStore(db_path)
     
     def set_preferences(self, preferences: NotificationPreferences) -> None:
-        """Set notification preferences for a user.
+        """Set notification preferences for a user (persists to database).
         
         Args:
             preferences: NotificationPreferences instance
         """
-        self.preferences[preferences.user_email] = preferences
+        self.preferences_store.set_preferences(preferences)
     
     def get_preferences(self, user_email: str) -> Optional[NotificationPreferences]:
-        """Get notification preferences for a user.
+        """Get notification preferences for a user (loads from database).
         
         Args:
             user_email: User email address
@@ -105,7 +108,7 @@ class EmailNotifier:
         Returns:
             NotificationPreferences or None if not found
         """
-        return self.preferences.get(user_email)
+        return self.preferences_store.get_preferences(user_email)
     
     def notify_on_reply(
         self,
@@ -252,14 +255,19 @@ class EmailNotifier:
         Returns:
             True if unsubscribed, False if token invalid
         """
-        for email, prefs in self.preferences.items():
-            if prefs.unsubscribe_token == token:
-                prefs.notify_on_reply = False
-                prefs.notify_on_event = False
-                prefs.notify_on_milestone = False
-                prefs.updated_at = datetime.utcnow().isoformat()
-                return True
-        return False
+        # Find preferences by token in database
+        prefs = self.preferences_store.get_preferences_by_token(token)
+        if not prefs:
+            return False
+        
+        # Mark all notifications as disabled
+        prefs.notify_on_reply = False
+        prefs.notify_on_event = False
+        prefs.notify_on_milestone = False
+        
+        # Update in database
+        self.preferences_store.update_preferences(prefs)
+        return True
     
     # Helper methods
     
