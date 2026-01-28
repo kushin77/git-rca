@@ -130,6 +130,7 @@ class TestGetInvestigationEventsEndpoint:
                 'message': 'Deploy API service',
                 'timestamp': datetime.utcnow().isoformat() + 'Z',
             },
+            headers=auth_headers
         )
         
         response = client.get(
@@ -139,7 +140,7 @@ class TestGetInvestigationEventsEndpoint:
         assert response.status_code == 200
         data = response.json
         assert 'events' in data
-        assert 'count' in data
+        assert 'total_count' in data
     
     def test_get_events_filter_by_source(self, client, auth_headers):
         """Test filtering events by source."""
@@ -161,6 +162,7 @@ class TestGetInvestigationEventsEndpoint:
                 'message': 'Git commit',
                 'timestamp': datetime.utcnow().isoformat() + 'Z',
             },
+            headers=auth_headers
         )
         client.post(
             f'/api/investigations/{inv_id}/events/link',
@@ -171,6 +173,7 @@ class TestGetInvestigationEventsEndpoint:
                 'message': 'Build job',
                 'timestamp': datetime.utcnow().isoformat() + 'Z',
             },
+            headers=auth_headers
         )
         
         response = client.get(
@@ -202,6 +205,7 @@ class TestGetInvestigationEventsEndpoint:
                 'message': 'Push',
                 'timestamp': datetime.utcnow().isoformat() + 'Z',
             },
+            headers=auth_headers
         )
         client.post(
             f'/api/investigations/{inv_id}/events/link',
@@ -212,6 +216,7 @@ class TestGetInvestigationEventsEndpoint:
                 'message': 'PR',
                 'timestamp': datetime.utcnow().isoformat() + 'Z',
             },
+            headers=auth_headers
         )
         
         response = client.get(
@@ -226,10 +231,18 @@ class TestGetInvestigationEventsEndpoint:
 class TestManualEventLinkingEndpoint:
     """Test manual event linking endpoint."""
     
-    def test_link_event_endpoint(self, client, investigation_store, test_investigation):
+    def test_link_event_endpoint(self, client, auth_headers):
         """Test POST /api/investigations/<id>/events/link endpoint."""
+        # Create investigation
         response = client.post(
-            f'/api/investigations/{test_investigation.id}/events/link',
+            '/api/investigations',
+            json={'title': 'Test Incident', 'description': 'Test', 'service': 'test-svc', 'severity': 'high'},
+            headers=auth_headers
+        )
+        inv_id = response.json['id']
+        
+        response = client.post(
+            f'/api/investigations/{inv_id}/events/link',
             json={
                 'event_id': 'manual-1',
                 'event_type': 'alert',
@@ -237,6 +250,7 @@ class TestManualEventLinkingEndpoint:
                 'message': 'High CPU usage detected',
                 'timestamp': datetime.utcnow().isoformat() + 'Z',
             },
+            headers=auth_headers
         )
         
         assert response.status_code == 201
@@ -416,8 +430,8 @@ class TestAnnotationThreading:
 class TestStory18Integration:
     """Integration tests for Story #18 features."""
     
-    @patch('src.services.event_linker.git_connector.collect')
-    @patch('src.services.event_linker.ci_connector.collect')
+    @patch('src.connectors.git_connector.GitConnector.collect')
+    @patch('src.connectors.ci_connector.CIConnector.collect')
     def test_event_linking_workflow(self, mock_ci, mock_git, client, investigation_store):
         """Test complete event linking workflow."""
         # Create investigation
@@ -461,7 +475,7 @@ class TestStory18Integration:
         # Create investigation
         response = client.post(
             '/api/investigations',
-            json={'title': 'Service Outage', 'status': 'open'},
+            json={'title': 'Service Outage', 'description': 'Test', 'service': 'test-svc', 'severity': 'high'},
             headers=auth_headers
         )
         inv_id = response.json['id']

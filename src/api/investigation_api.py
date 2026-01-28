@@ -80,21 +80,13 @@ class InvestigationAPI:
                 if not all(f in data for f in required_fields):
                     return jsonify({'error': f'Missing required fields: {required_fields}'}), 400
 
-                # Create investigation object
-                investigation = Investigation(
+                # Create investigation using store
+                saved = self.inv_store.create_investigation(
                     title=data['title'],
                     description=data['description'],
-                    service=data['service'],
-                    severity=EventSeverity[data['severity']],
-                    status=InvestigationStatus.OPEN,
-                    environment=data.get('environment'),
-                    assigned_to=data.get('assigned_to'),
-                    created_by=request.headers.get('X-User-ID', 'system'),
-                    tags=data.get('tags', []),
+                    severity=data['severity'],
+                    status='open',
                 )
-
-                # Save to store
-                saved = self.inv_store.create(investigation)
 
                 return jsonify(saved.to_dict()), 201
 
@@ -315,16 +307,25 @@ class InvestigationAPI:
                 limit = int(request.args.get('limit', 100))
                 offset = int(request.args.get('offset', 0))
 
-                # Get events from event store
-                all_events = self.event_store.get_all()
-                related_events = [e for e in all_events if e.investigation_id == investigation_id]
+                # Get events linked to investigation
+                related_events = self.inv_store.get_investigation_events(investigation_id)
+
+                # Apply filters
+                source_filter = request.args.get('source')
+                if source_filter:
+                    related_events = [e for e in related_events if e.source == source_filter]
+                
+                event_type_filter = request.args.get('event_type')
+                if event_type_filter:
+                    related_events = [e for e in related_events if e.event_type == event_type_filter]
 
                 # Apply limit and offset
+                total_count = len(related_events)
                 paginated = related_events[offset:offset + limit]
 
                 return jsonify({
                     'events': [e.to_dict() for e in paginated],
-                    'total_count': len(related_events),
+                    'total_count': total_count,
                     'limit': limit,
                     'offset': offset,
                 }), 200
@@ -365,36 +366,17 @@ class InvestigationAPI:
                 if not investigation:
                     return jsonify({'error': 'Investigation not found'}), 404
                 
-                # Create event
-                from src.models.event import Event, EventSource, EventSeverity
-                event = Event(
-                    id=data['event_id'],
-                    timestamp=data['timestamp'],
-                    source=data['source'],
-                    event_type=data['event_type'],
-                    severity=EventSeverity.MEDIUM,
-                    data={'message': data['message']},
-                )
-                
-                # Save event
-                self.event_store.create_event(event)
-                
-                # Link to investigation
-                self.inv_store.add_event(
+                # Link event to investigation
+                event = self.inv_store.add_event(
                     investigation_id=investigation_id,
-                    event_id=event.id,
-                    event_type=event.event_type,
-                    source=event.source,
+                    event_id=data['event_id'],
+                    event_type=data['event_type'],
+                    source=data['source'],
                     message=data['message'],
-                    timestamp=event.timestamp
+                    timestamp=data['timestamp']
                 )
                 
-                return jsonify({
-                    'event_id': event.id,
-                    'investigation_id': investigation_id,
-                    'source': event.source,
-                    'message': 'Event linked successfully'
-                }), 201
+                return jsonify(event.to_dict()), 201
                 
             except Exception as e:
                 return jsonify({'error': 'Internal server error'}), 500
