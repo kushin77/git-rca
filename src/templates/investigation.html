@@ -83,6 +83,29 @@
             {% endif %}
         </section>
 
+        <!-- Section 2.5: Investigation Canvas -->
+        <section class="section">
+            <h2 class="section-title">Investigation Canvas</h2>
+            <div class="canvas-toolbar">
+                <button id="add-node-btn" class="btn btn-primary">Add Event Node</button>
+                <button id="add-annotation-btn" class="btn btn-secondary">Add Annotation</button>
+                <button id="clear-canvas-btn" class="btn btn-danger">Clear Canvas</button>
+                <button id="save-canvas-btn" class="btn btn-success">Save Layout</button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="investigation-canvas" width="800" height="600"></canvas>
+                <div id="canvas-info" class="canvas-info">
+                    <p><strong>Instructions:</strong></p>
+                    <ul>
+                        <li>Click and drag nodes to reposition them</li>
+                        <li>Click on a node and then another to create connections</li>
+                        <li>Double-click nodes to edit their properties</li>
+                        <li>Right-click nodes to delete them</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- Section 3: Annotations & Notes -->
         <section class="section">
             <h2 class="section-title">Annotations & Notes</h2>
@@ -289,6 +312,10 @@ function addAnnotation() {
     .catch(e => alert('Error adding note: ' + e));
 }
 
+    // Pass investigation data to JavaScript
+    window.INVESTIGATION_DATA = {{ investigation|tojson }};
+</script>
+<script>
 function markResolved() {
     document.getElementById('status').value = 'resolved';
     saveInvestigation();

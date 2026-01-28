@@ -61,6 +61,16 @@ def create_app(db_path: str = 'investigations.db'):
     event_store = EventStore(db_path=db_path)
     register_investigation_api(app, investigation_store, event_store)
 
+    # Register canvas UI API
+    from src.models.canvas import CanvasStore
+    canvas_store = CanvasStore()
+    from src.api.canvas_ui_api import register_canvas_ui_api
+    register_canvas_ui_api(app, canvas_store, investigation_store)
+
+    # Register analytics API
+    from src.api.analytics_api import register_analytics_api
+    register_analytics_api(app, event_store, investigation_store)
+
     
     
     # Register error handlers with logging

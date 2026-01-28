@@ -19,13 +19,16 @@ def client():
     with tempfile.NamedTemporaryFile(delete=False) as f:
         test_db = f.name
     
-    # Create test app with temporary database
-    test_app = create_app(db_path=test_db)
-    
-    # Create test store and populate with test data
+    # Use the global app and modify its investigation store
+    from src.app import app
     from src.store.investigation_store import InvestigationStore
+    
+    # Create test store with temporary database
     test_store = InvestigationStore(db_path=test_db)
-    test_app.investigation_store = test_store
+    
+    # Replace the global app's investigation store
+    original_store = app.investigation_store
+    app.investigation_store = test_store
     
     # Manually create investigations with fixed IDs for testing
     import sqlite3
@@ -37,9 +40,9 @@ def client():
     # Create test investigation with fixed ID
     cursor.execute('''
         INSERT INTO investigations 
-        (id, title, status, severity, created_at, updated_at, description, impact)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ''', ('inv-001', 'Test Investigation inv-001', 'open', 'high', now, now, 'Test investigation for canvas rendering', ''))
+        (id, title, status, impact_severity, created_at, updated_at, root_cause, remediation, lessons_learned, description, impact)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', ('inv-001', 'Test Investigation inv-001', 'open', 'high', now, now, '', '', '', 'Test investigation for canvas rendering', ''))
     
     # Add test event
     cursor.execute('''
@@ -58,11 +61,12 @@ def client():
     conn.commit()
     conn.close()
     
-    test_app.config['TESTING'] = True
-    with test_app.test_client() as test_client:
+    app.config['TESTING'] = True
+    with app.test_client() as test_client:
         yield test_client
     
-    # Cleanup test database
+    # Restore original store and cleanup
+    app.investigation_store = original_store
     if os.path.exists(test_db):
         os.unlink(test_db)
 
@@ -216,10 +220,16 @@ class TestInvestigationCanvasAPI:
 
     def test_add_annotation_endpoint_exists(self, client):
         """Test that add annotation endpoint exists."""
-        response = client.post('/api/investigations/inv-001/annotations', json={
-            'text': 'Test annotation',
-            'author': 'Test User'
-        })
+        from src.middleware.auth import get_token_validator
+        validator = get_token_validator()
+        token = validator.generate_token('test_user', 'engineer')
+        
+        response = client.post('/api/investigations/inv-001/annotations', 
+                             json={
+                                 'text': 'Test annotation',
+                                 'author': 'Test User'
+                             },
+                             headers={'Authorization': f'Bearer {token}'})
         assert response.status_code in [200, 201]
 
     def test_list_annotations_endpoint_exists(self, client):
