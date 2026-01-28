@@ -120,18 +120,20 @@ class TestCanvasUIAPI:
         # Check that routes were registered
         routes = [str(rule) for rule in app.url_map.iter_rules()]
 
-        expected_endpoints = [
+        expected_patterns = [
             '/api/canvas/<canvas_id>',
             '/api/canvas',
             '/api/canvas/<canvas_id>/nodes',
+            '/api/canvas/<canvas_id>/nodes/<node_id>',
             '/api/canvas/<canvas_id>/edges',
+            '/api/canvas/<canvas_id>/edges/<edge_id>',
             '/api/canvas/<canvas_id>/analysis',
         ]
 
-        for endpoint in expected_endpoints:
-            # Check if the pattern exists (routes may have methods)
-            assert any(endpoint.replace('<canvas_id>', '') in route for route in routes), \
-                f"Endpoint pattern {endpoint} not found in routes"
+        for pattern in expected_patterns:
+            # Check if the pattern exists in routes
+            assert any(pattern in route for route in routes), \
+                f"Endpoint pattern {pattern} not found in routes. Available routes: {routes}"
 
 
 class TestCanvasUIIntegration:

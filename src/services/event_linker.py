@@ -69,13 +69,13 @@ class EventLinker:
         all_events = []
         
         # Git events
-        git_events = git_connector.load_events(limit=100)
+        git_events = git_connector.collect()
         for event in git_events:
             if self._is_in_time_window(event, time_start, time_end):
                 all_events.append(('git', event))
         
         # CI events
-        ci_events = ci_connector.load_events(limit=100)
+        ci_events = ci_connector.collect()
         for event in ci_events:
             if self._is_in_time_window(event, time_start, time_end):
                 all_events.append(('ci', event))
@@ -128,7 +128,7 @@ class EventLinker:
         
         # Search git events
         if source is None or source == 'git':
-            git_events = git_connector.load_events(limit=limit)
+            git_events = git_connector.collect()
             for event in git_events:
                 if self._matches_query(event, query):
                     if event_type and event.get('type') != event_type:
@@ -144,7 +144,7 @@ class EventLinker:
         
         # Search CI events
         if source is None or source == 'ci':
-            ci_events = ci_connector.load_events(limit=limit)
+            ci_events = ci_connector.collect()
             for event in ci_events:
                 if self._matches_query(event, query):
                     if event_type and event.get('type') != event_type:
@@ -203,7 +203,7 @@ class EventLinker:
         suggestions = []
         
         # Check git events
-        git_events = git_connector.load_events(limit=100)
+        git_events = git_connector.collect()
         for event in git_events:
             event_id = event.get('id', f"git-{event.get('timestamp')}")
             if event_id in linked_ids:
@@ -221,7 +221,7 @@ class EventLinker:
                     })
         
         # Check CI events
-        ci_events = ci_connector.load_events(limit=100)
+        ci_events = ci_connector.collect()
         for event in ci_events:
             event_id = event.get('id', f"ci-{event.get('timestamp')}")
             if event_id in linked_ids:

@@ -69,7 +69,7 @@ def investigation_store():
         store.create_investigation(
             title=f"Investigation {i+1}",
             description="Resolved investigation",
-            severity="medium",
+            impact_severity="medium",
             status="resolved"
         )
 
@@ -77,7 +77,7 @@ def investigation_store():
         store.create_investigation(
             title=f"Open Investigation {i+1}",
             description="Active investigation",
-            severity="high",
+            impact_severity="high",
             status="open"
         )
 
@@ -191,7 +191,7 @@ class TestAnalyticsAPI:
 
         resolved = []
         for inv in investigations:
-            if inv.status.value == 'RESOLVED' and datetime.fromisoformat(inv.updated_at.replace('Z', '+00:00')) >= cutoff_date:
+            if inv.status == 'resolved' and datetime.fromisoformat(inv.updated_at.replace('Z', '+00:00')) >= cutoff_date:
                 created = datetime.fromisoformat(inv.created_at.replace('Z', '+00:00'))
                 updated = datetime.fromisoformat(inv.updated_at.replace('Z', '+00:00'))
                 mttr_minutes = (updated - created).total_seconds() / 60
@@ -210,7 +210,7 @@ class TestAnalyticsAPI:
 
         # Get critical events
         events = api.event_store.get_all()
-        critical_count = len([e for e in events if e.severity.value == 'CRITICAL'])
+        critical_count = len([e for e in events if e.severity == 'CRITICAL'])
 
         # Assertions
         assert critical_count == 25
@@ -288,7 +288,7 @@ class TestAnalyticsAPI:
             store.create_investigation(
                 title=f"Open Investigation {i+1}",
                 description="Active investigation",
-                severity="high",
+                impact_severity="high",
                 status="open"
             )
 
@@ -323,7 +323,7 @@ class TestAnalyticsAPI:
         api = AnalyticsAPI(event_store, investigation_store)
 
         investigations = api.inv_store.get_all()
-        open_investigations = len([i for i in investigations if i.status.value == 'OPEN'])
+        open_investigations = len([i for i in investigations if i.status.value == 'open'])
 
         insights = []
         if open_investigations > 2:

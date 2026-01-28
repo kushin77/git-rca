@@ -98,6 +98,7 @@ class Investigation:
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
         deleted_at: Optional[str] = None,
+        impact: str = '',
     ):
         """Initialize an Investigation (Phase 3a Expanded).
         
@@ -155,6 +156,7 @@ class Investigation:
         self.created_at = created_at or datetime.utcnow().isoformat()
         self.updated_at = updated_at or datetime.utcnow().isoformat()
         self.deleted_at = deleted_at
+        self.impact = impact
     
     def is_active(self) -> bool:
         """Check if investigation is active (not soft-deleted).

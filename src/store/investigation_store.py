@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 
-from src.models.investigation import Investigation, InvestigationEvent, Annotation
+from src.models.investigation import Investigation, InvestigationEvent, Annotation, InvestigationStatus, ImpactSeverity
 
 
 class InvestigationStore:
@@ -39,12 +39,12 @@ class InvestigationStore:
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
                 status TEXT DEFAULT 'open',
-                severity TEXT DEFAULT 'medium',
+                impact_severity TEXT DEFAULT 'medium',
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
                 root_cause TEXT DEFAULT '',
-                fix TEXT DEFAULT '',
-                prevention TEXT DEFAULT '',
+                remediation TEXT DEFAULT '',
+                lessons_learned TEXT DEFAULT '',
                 description TEXT DEFAULT '',
                 impact TEXT DEFAULT ''
             )
@@ -87,7 +87,8 @@ class InvestigationStore:
         self,
         title: str,
         status: str = 'open',
-        severity: str = 'medium',
+        impact_severity: str = 'medium',
+        severity: Optional[str] = None,
         description: str = '',
         impact: str = '',
     ) -> Investigation:
@@ -96,7 +97,7 @@ class InvestigationStore:
         Args:
             title: Investigation title
             status: Status ('open', 'closed', 'resolved')
-            severity: Severity ('critical', 'high', 'medium', 'low')
+            impact_severity: Impact severity ('critical', 'high', 'medium', 'low')
             description: Detailed description
             impact: Business impact
             
@@ -109,11 +110,15 @@ class InvestigationStore:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
+        # If legacy `severity` provided, use it as impact_severity
+        if severity:
+            impact_severity = severity
+
         cursor.execute('''
             INSERT INTO investigations 
-            (id, title, status, severity, created_at, updated_at, description, impact)
+            (id, title, status, impact_severity, created_at, updated_at, description, impact)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (investigation_id, title, status, severity, now, now, description, impact))
+        ''', (investigation_id, title, status, impact_severity, now, now, description, impact))
         
         conn.commit()
         conn.close()
@@ -122,7 +127,7 @@ class InvestigationStore:
             id=investigation_id,
             title=title,
             status=status,
-            impact_severity=severity,
+            impact_severity=impact_severity,
             created_at=now,
             updated_at=now,
             description=description,
@@ -152,7 +157,7 @@ class InvestigationStore:
     def list_investigations(
         self,
         status: Optional[str] = None,
-        severity: Optional[str] = None,
+        impact_severity: Optional[str] = None,
         limit: int = 100,
         offset: int = 0,
     ) -> List[Investigation]:
@@ -160,7 +165,7 @@ class InvestigationStore:
         
         Args:
             status: Filter by status
-            severity: Filter by severity
+            impact_severity: Filter by impact severity
             limit: Maximum results to return
             offset: Pagination offset
             
@@ -177,9 +182,9 @@ class InvestigationStore:
             query += ' AND status = ?'
             params.append(status)
         
-        if severity:
-            query += ' AND severity = ?'
-            params.append(severity)
+        if impact_severity:
+            query += ' AND impact_severity = ?'
+            params.append(impact_severity)
         
         query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?'
         params.extend([limit, offset])
@@ -211,17 +216,25 @@ class InvestigationStore:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Only allow updating specific fields
+        # Only allow updating specific fields (accept legacy names)
         allowed_fields = {
             'title', 'status', 'severity', 'root_cause',
             'fix', 'prevention', 'description', 'impact'
         }
-        
+
         update_fields = {k: v for k, v in fields.items() if k in allowed_fields}
         update_fields['updated_at'] = datetime.utcnow().isoformat()
-        
-        set_clause = ', '.join([f'{k} = ?' for k in update_fields.keys()])
-        values = list(update_fields.values()) + [investigation_id]
+
+        # Map legacy field names to DB columns
+        field_map = {
+            'severity': 'impact_severity',
+            'fix': 'remediation',
+            'prevention': 'lessons_learned'
+        }
+
+        mapped_fields = {field_map.get(k, k): v for k, v in update_fields.items()}
+        set_clause = ', '.join([f'{k} = ?' for k in mapped_fields.keys()])
+        values = list(mapped_fields.values()) + [investigation_id]
         
         cursor.execute(
             f'UPDATE investigations SET {set_clause} WHERE id = ?',
@@ -231,7 +244,8 @@ class InvestigationStore:
         conn.commit()
         conn.close()
         
-        investigation.update(**update_fields)
+        # Update model with mapped field names so attributes align
+        investigation.update(**{field_map.get(k, k): v for k, v in update_fields.items()})
         return investigation
 
     def delete_investigation(self, investigation_id: str) -> bool:
@@ -400,6 +414,90 @@ class InvestigationStore:
         
         return [self._row_to_annotation(row) for row in rows]
 
+    # Compatibility aliases for older API used by other modules/tests
+    def create(self, investigation):
+        """Compatibility wrapper to create an investigation from a model or dict."""
+        if hasattr(investigation, 'to_dict'):
+            data = investigation.to_dict()
+            return self.create_investigation(
+                title=data.get('title', ''),
+                description=data.get('description', ''),
+                impact_severity=data.get('impact_severity', 'medium'),
+                status=data.get('status', 'open'),
+            )
+        elif isinstance(investigation, dict):
+            return self.create_investigation(
+                title=investigation.get('title', ''),
+                description=investigation.get('description', ''),
+                impact_severity=investigation.get('impact_severity', 'medium'),
+                status=investigation.get('status', 'open'),
+            )
+        else:
+            raise TypeError('Unsupported type for create()')
+
+    def get_by_id(self, investigation_id: str) -> Optional[Investigation]:
+        return self.get_investigation(investigation_id)
+
+    def get_all(self) -> List[Investigation]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM investigations ORDER BY created_at DESC')
+        rows = cursor.fetchall()
+        conn.close()
+        return [self._row_to_investigation(row) for row in rows]
+
+    def update(self, investigation) -> Optional[Investigation]:
+        """Compatibility wrapper to update using an Investigation instance."""
+        if not hasattr(investigation, 'id'):
+            return None
+
+        mapped_fields = {}
+        # Map model attributes to DB columns
+        if hasattr(investigation, 'title'):
+            mapped_fields['title'] = investigation.title
+        if hasattr(investigation, 'status'):
+            mapped_fields['status'] = investigation.status
+        if hasattr(investigation, 'impact_severity'):
+            mapped_fields['impact_severity'] = investigation.impact_severity
+        if hasattr(investigation, 'root_cause'):
+            mapped_fields['root_cause'] = investigation.root_cause
+        if hasattr(investigation, 'remediation'):
+            mapped_fields['remediation'] = investigation.remediation
+        if hasattr(investigation, 'lessons_learned'):
+            mapped_fields['lessons_learned'] = investigation.lessons_learned
+        if hasattr(investigation, 'description'):
+            mapped_fields['description'] = investigation.description
+        if hasattr(investigation, 'impact'):
+            mapped_fields['impact'] = investigation.impact
+
+        # Always update updated_at
+        mapped_fields['updated_at'] = datetime.utcnow().isoformat()
+
+        set_clause = ', '.join([f'{k} = ?' for k in mapped_fields.keys()])
+        values = list(mapped_fields.values()) + [investigation.id]
+
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute(f'UPDATE investigations SET {set_clause} WHERE id = ?', values)
+        conn.commit()
+        conn.close()
+
+        # Return the same instance (with updated timestamp)
+        investigation.updated_at = mapped_fields['updated_at']
+        return investigation
+
+    def add_event_to_investigation(self, investigation_id: str, event_id: str):
+        """Compatibility alias for add_event; simply links an event by creating an InvestigationEvent."""
+        # We don't have event_type/source/message/timestamp here; create a minimal link
+        return self.add_event(
+            investigation_id=investigation_id,
+            event_id=event_id,
+            event_type='unknown',
+            source='unknown',
+            message='',
+            timestamp=datetime.utcnow().isoformat(),
+        )
+
     def update_annotation(
         self,
         annotation_id: str,
@@ -464,15 +562,15 @@ class InvestigationStore:
         return Investigation(
             id=row[0],
             title=row[1],
-            status=row[2],
-            severity=row[3],
+            status=InvestigationStatus(row[2]) if row[2] else InvestigationStatus.OPEN,
+            impact_severity=ImpactSeverity(row[3]) if row[3] else ImpactSeverity.MEDIUM,
             created_at=row[4],
             updated_at=row[5],
-            root_cause=row[6],
-            fix=row[7],
-            prevention=row[8],
-            description=row[9],
-            impact=row[10],
+            root_cause=row[6] or '',
+            remediation=row[7] or '',
+            lessons_learned=row[8] or '',
+            description=row[9] or '',
+            impact=row[10] or '',
         )
 
     @staticmethod
