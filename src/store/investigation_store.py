@@ -122,11 +122,10 @@ class InvestigationStore:
             id=investigation_id,
             title=title,
             status=status,
-            severity=severity,
+            impact_severity=severity,
             created_at=now,
             updated_at=now,
             description=description,
-            impact=impact,
         )
 
     def get_investigation(self, investigation_id: str) -> Optional[Investigation]:

@@ -196,6 +196,38 @@ class Event:
         return f"Event(id={self.id}, source={self.source}, type={self.event_type}, severity={self.severity})"
 
 
+class EventStore:
+    """Store for managing events"""
+
+    def __init__(self):
+        self.events: dict = {}
+
+    def add(self, event: Event) -> None:
+        """Add event to store"""
+        self.events[event.id] = event
+
+    def get(self, event_id: str) -> Optional[Event]:
+        """Get event by ID"""
+        return self.events.get(event_id)
+
+    def get_all(self) -> List[Event]:
+        """Get all active events"""
+        return [e for e in self.events.values() if e.is_active()]
+
+    def delete(self, event_id: str) -> None:
+        """Soft-delete an event"""
+        if event_id in self.events:
+            self.events[event_id].soft_delete()
+
+    def update(self, event: Event) -> None:
+        """Update event in store"""
+        self.events[event.id] = event
+
+    def count(self) -> int:
+        """Count active events"""
+        return len(self.get_all())
+
+
 class EventLinkerResult:
     """Result of linking an event to investigations."""
     
