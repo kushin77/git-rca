@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, Blueprint
 from typing import List, Dict
 import os
 
@@ -9,6 +9,12 @@ from src.services.event_linker import EventLinker
 from src.services.email_notifier import EmailNotifier, NotificationPreferences
 from src.middleware import require_auth, init_auth, init_revocation
 from src.utils.logging import setup_logging, log_request_response, LogContext
+
+
+# Blueprint for module-level routes so create_app() can register them
+main_bp = Blueprint(
+    'main', __name__, template_folder='templates', static_folder='static', static_url_path='/static'
+)
 
 
 def create_app(db_path: str = 'investigations.db'):
@@ -242,6 +248,13 @@ def create_app(db_path: str = 'investigations.db'):
             )
             return jsonify({'error': 'Failed to get stats', 'details': str(e)}), 500
     
+    # Register module-level routes defined on main_bp
+    try:
+        app.register_blueprint(main_bp)
+    except Exception:
+        # If blueprint registration fails, log and continue
+        app.logger.warning('Failed to register main blueprint')
+
     return app
 
 
@@ -249,7 +262,7 @@ def create_app(db_path: str = 'investigations.db'):
 app = create_app()
 
 
-@app.get('/')
+@main_bp.get('/')
 @log_request_response
 def index():
     """Health check endpoint."""
