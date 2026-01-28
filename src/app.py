@@ -258,6 +258,17 @@ def create_app(db_path: str = 'investigations.db'):
 # Create default app instance
 app = create_app()
 
+# Expose common service objects at module level for tests and external callers
+# (legacy tests import `src.app.event_linker`, etc.)
+try:
+    investigation_store = app.investigation_store
+    event_linker = app.event_linker
+    email_notifier = app.email_notifier
+except Exception:
+    investigation_store = None
+    event_linker = None
+    email_notifier = None
+
 
 @app.get('/')
 @log_request_response
