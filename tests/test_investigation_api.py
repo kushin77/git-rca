@@ -23,12 +23,12 @@ class TestInvestigationModel:
             id='inv-001',
             title='Test Investigation',
             status='open',
-            severity='high',
+            impact_severity='high',
         )
         assert inv.id == 'inv-001'
         assert inv.title == 'Test Investigation'
         assert inv.status == 'open'
-        assert inv.severity == 'high'
+        assert inv.impact_severity == 'high'
 
     def test_investigation_to_dict(self):
         """Test converting investigation to dictionary."""
@@ -36,7 +36,7 @@ class TestInvestigationModel:
             id='inv-001',
             title='Test',
             status='open',
-            severity='high',
+            impact_severity='high',
             root_cause='Bug in code',
         )
         data = inv.to_dict()
@@ -142,27 +142,27 @@ class TestInvestigationStore:
         inv = store.create_investigation(
             title='Payment Processing Timeout',
             status='open',
-            severity='high',
+            impact_severity='high',
             description='Payment service timeout',
             impact='Customers unable to pay',
         )
         assert inv.id is not None
         assert inv.title == 'Payment Processing Timeout'
         assert inv.status == 'open'
-        assert inv.severity == 'high'
+        assert inv.impact_severity == 'high'
         assert inv.created_at is not None
 
     def test_get_investigation(self, store):
         """Test retrieving an investigation."""
         created = store.create_investigation(
             title='Test Investigation',
-            severity='critical',
+            impact_severity='critical',
         )
         retrieved = store.get_investigation(created.id)
         assert retrieved is not None
         assert retrieved.id == created.id
         assert retrieved.title == 'Test Investigation'
-        assert retrieved.severity == 'critical'
+        assert retrieved.impact_severity == 'critical'
 
     def test_get_nonexistent_investigation(self, store):
         """Test retrieving nonexistent investigation."""
@@ -171,9 +171,9 @@ class TestInvestigationStore:
 
     def test_list_investigations(self, store):
         """Test listing investigations."""
-        store.create_investigation(title='Investigation 1', severity='high')
-        store.create_investigation(title='Investigation 2', severity='medium')
-        store.create_investigation(title='Investigation 3', severity='critical')
+        store.create_investigation(title='Investigation 1', impact_severity='high')
+        store.create_investigation(title='Investigation 2', impact_severity='medium')
+        store.create_investigation(title='Investigation 3', impact_severity='critical')
         
         investigations = store.list_investigations()
         assert len(investigations) >= 3
@@ -181,12 +181,12 @@ class TestInvestigationStore:
 
     def test_list_investigations_with_severity_filter(self, store):
         """Test filtering investigations by severity."""
-        store.create_investigation(title='Critical Issue', severity='critical')
-        store.create_investigation(title='High Issue', severity='high')
-        store.create_investigation(title='Medium Issue', severity='medium')
+        store.create_investigation(title='Critical Issue', impact_severity='critical')
+        store.create_investigation(title='High Issue', impact_severity='high')
+        store.create_investigation(title='Medium Issue', impact_severity='medium')
         
-        critical = store.list_investigations(severity='critical')
-        assert all(inv.severity == 'critical' for inv in critical)
+        critical = store.list_investigations(impact_severity='critical')
+        assert all(inv.impact_severity == 'critical' for inv in critical)
 
     def test_list_investigations_with_status_filter(self, store):
         """Test filtering investigations by status."""

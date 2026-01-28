@@ -35,6 +35,20 @@ class ConnectorAPI:
     def register_routes(self, app):
         """Register all connector endpoints with Flask app"""
 
+        # If the blueprint has already had routes set up once, avoid
+        # redefining the decorators (which raises when called after
+        # the blueprint was registered). Instead, just ensure the
+        # blueprint is registered on this app and return.
+        try:
+            if getattr(connector_bp, '_got_registered_once', False):
+                try:
+                    app.register_blueprint(connector_bp)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            pass
+
         @connector_bp.route('/status', methods=['GET'])
         def get_connector_status():
             """

@@ -106,7 +106,7 @@ class TestGetInvestigationEventsEndpoint:
         # Create investigation via the app
         response = client.post(
             '/api/investigations',
-            json={'title': 'Test Incident', 'severity': 'high'},
+            json={'title': 'Test Incident', 'description': 'Test description', 'service': 'test-service', 'severity': 'high'},
         )
         inv_id = response.json['id']
         
@@ -136,7 +136,7 @@ class TestGetInvestigationEventsEndpoint:
         # Create investigation
         response = client.post(
             '/api/investigations',
-            json={'title': 'Test', 'severity': 'high'},
+            json={'title': 'Test', 'description': 'Test desc', 'service': 'test-svc', 'severity': 'high'},
         )
         inv_id = response.json['id']
         
@@ -176,7 +176,7 @@ class TestGetInvestigationEventsEndpoint:
         # Create investigation
         response = client.post(
             '/api/investigations',
-            json={'title': 'Test', 'severity': 'high'},
+            json={'title': 'Test', 'description': 'Test desc', 'service': 'test-svc', 'severity': 'high'},
         )
         inv_id = response.json['id']
         
@@ -358,7 +358,7 @@ class TestAnnotationThreading:
         # Create investigation
         response = client.post(
             '/api/investigations',
-            json={'title': 'Test', 'severity': 'high'},
+            json={'title': 'Test', 'description': 'Test desc', 'service': 'test-svc', 'severity': 'high'},
         )
         inv_id = response.json['id']
         

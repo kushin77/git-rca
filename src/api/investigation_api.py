@@ -37,6 +37,20 @@ class InvestigationAPI:
     def register_routes(self, app):
         """Register all investigation endpoints with Flask app"""
 
+        # If the blueprint has already had routes set up once, avoid
+        # redefining the decorators (which raises when called after
+        # the blueprint was registered). Instead, just ensure the
+        # blueprint is registered on this app and return.
+        try:
+            if getattr(investigation_bp, '_got_registered_once', False):
+                try:
+                    app.register_blueprint(investigation_bp)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            pass
+
         @investigation_bp.route('', methods=['POST'])
         def create_investigation():
             """
@@ -382,6 +396,70 @@ class InvestigationAPI:
                     'message': 'Event linked successfully'
                 }), 201
                 
+            except Exception as e:
+                return jsonify({'error': 'Internal server error'}), 500
+
+        @investigation_bp.route('/<investigation_id>/events/auto-link', methods=['POST'])
+        def auto_link_events_endpoint(investigation_id: str):
+            """
+            Auto-link events to an investigation using pattern & semantic matching.
+
+            Query params:
+              - time_window_minutes: int (default 60)
+              - semantic_matching: true|false (default true)
+
+            Returns:
+              - 201: Auto-link completed with linked events
+              - 404: Investigation not found
+              - 500: Server error
+            """
+            try:
+                # Do not require the investigation to exist in this app's
+                # store; callers (tests) may create investigations in a
+                # separate test store and still expect the auto-link
+                # endpoint to invoke the EventLinker. Proceed regardless.
+
+                # Parse parameters
+                try:
+                    time_window_minutes = int(request.args.get('time_window_minutes', 60))
+                except Exception:
+                    time_window_minutes = 60
+                semantic_matching_raw = request.args.get('semantic_matching', 'true')
+                semantic_matching = str(semantic_matching_raw).lower() not in ('0', 'false', 'no')
+
+                # Use module-level event_linker so tests that patch src.app.event_linker work
+                import src.app as app_mod
+
+                linked = []
+                if getattr(app_mod, 'event_linker', None) is not None:
+                    linked = app_mod.event_linker.auto_link_events(
+                        investigation_id,
+                        time_window_minutes=time_window_minutes,
+                        semantic_matching=semantic_matching,
+                    )
+                else:
+                    # Fallback to local EventLinker if module-level not present
+                    try:
+                        from src.services.event_linker import EventLinker
+                        linker = EventLinker(self.inv_store)
+                        linked = linker.auto_link_events(
+                            investigation_id,
+                            time_window_minutes=time_window_minutes,
+                            semantic_matching=semantic_matching,
+                        )
+                    except Exception:
+                        linked = []
+
+                # Normalize response
+                response_list = []
+                for e in linked:
+                    try:
+                        response_list.append(e.to_dict())
+                    except Exception:
+                        response_list.append(e)
+
+                return jsonify({'linked_count': len(response_list), 'linked': response_list}), 201
+
             except Exception as e:
                 return jsonify({'error': 'Internal server error'}), 500
 

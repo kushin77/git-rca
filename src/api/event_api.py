@@ -33,6 +33,20 @@ class EventAPI:
     def register_routes(self, app):
         """Register all event endpoints with Flask app"""
 
+        # If the blueprint has already had routes set up once, avoid
+        # redefining the decorators (which raises when called after
+        # the blueprint was registered). Instead, just ensure the
+        # blueprint is registered on this app and return.
+        try:
+            if getattr(event_bp, '_got_registered_once', False):
+                try:
+                    app.register_blueprint(event_bp)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            pass
+
         @event_bp.route('', methods=['POST'])
         def create_event():
             """

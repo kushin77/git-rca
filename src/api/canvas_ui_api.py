@@ -43,6 +43,20 @@ class CanvasUIAPI:
     def register_routes(self, app):
         """Register all canvas endpoints"""
 
+        # If the blueprint has already had routes set up once, avoid
+        # redefining the decorators (which raises when called after
+        # the blueprint was registered). Instead, just ensure the
+        # blueprint is registered on this app and return.
+        try:
+            if getattr(canvas_bp, '_got_registered_once', False):
+                try:
+                    app.register_blueprint(canvas_bp)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            pass
+
         @canvas_bp.route('/<canvas_id>', methods=['GET'])
         def get_canvas(canvas_id):
             """

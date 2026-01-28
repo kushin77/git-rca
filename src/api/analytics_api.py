@@ -32,6 +32,20 @@ class AnalyticsAPI:
     def register_routes(self, app):
         """Register all analytics endpoints with Flask app"""
 
+        # If the blueprint has already had routes set up once, avoid
+        # redefining the decorators (which raises when called after
+        # the blueprint was registered). Instead, just ensure the
+        # blueprint is registered on this app and return.
+        try:
+            if getattr(analytics_bp, '_got_registered_once', False):
+                try:
+                    app.register_blueprint(analytics_bp)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            pass
+
         @analytics_bp.route('/events/by-source', methods=['GET'])
         def get_events_by_source_distribution():
             """
