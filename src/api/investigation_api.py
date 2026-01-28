@@ -19,8 +19,9 @@ from flask import Blueprint, request, jsonify
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime, timedelta
 from src.store.investigation_store import InvestigationStore
-from src.models.investigation import Investigation, InvestigationStatus, EventSeverity
-from src.models.event import Event, EventStore
+from src.models.investigation import Investigation, InvestigationStatus
+from src.models.event import Event, EventSeverity
+from src.store.event_store import EventStore
 
 # Create Blueprint
 investigation_bp = Blueprint('investigations', __name__, url_prefix='/api/investigations')
@@ -314,6 +315,73 @@ class InvestigationAPI:
                     'offset': offset,
                 }), 200
 
+            except Exception as e:
+                return jsonify({'error': 'Internal server error'}), 500
+
+        @investigation_bp.route('/<investigation_id>/events/link', methods=['POST'])
+        def link_event_to_investigation(investigation_id):
+            """
+            Link an event to an investigation
+            
+            Request body:
+            {
+                "event_id": "str",
+                "event_type": "str", 
+                "source": "str",
+                "message": "str",
+                "timestamp": "ISO string"
+            }
+            
+            Returns:
+            - 201: Event linked successfully
+            - 400: Validation error
+            - 404: Investigation not found
+            - 500: Server error
+            """
+            try:
+                data = request.get_json()
+                
+                # Validate required fields
+                required_fields = ['event_id', 'event_type', 'source', 'message', 'timestamp']
+                if not all(f in data for f in required_fields):
+                    return jsonify({'error': f'Missing required fields: {required_fields}'}), 400
+                
+                # Check if investigation exists
+                investigation = self.inv_store.get_investigation(investigation_id)
+                if not investigation:
+                    return jsonify({'error': 'Investigation not found'}), 404
+                
+                # Create event
+                from src.models.event import Event, EventSource, EventSeverity
+                event = Event(
+                    id=data['event_id'],
+                    timestamp=data['timestamp'],
+                    source=data['source'],
+                    event_type=data['event_type'],
+                    severity=EventSeverity.MEDIUM,
+                    data={'message': data['message']},
+                )
+                
+                # Save event
+                self.event_store.create_event(event)
+                
+                # Link to investigation
+                self.inv_store.add_event(
+                    investigation_id=investigation_id,
+                    event_id=event.id,
+                    event_type=event.event_type,
+                    source=event.source,
+                    message=data['message'],
+                    timestamp=event.timestamp
+                )
+                
+                return jsonify({
+                    'event_id': event.id,
+                    'investigation_id': investigation_id,
+                    'source': event.source,
+                    'message': 'Event linked successfully'
+                }), 201
+                
             except Exception as e:
                 return jsonify({'error': 'Internal server error'}), 500
 

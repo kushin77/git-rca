@@ -9,6 +9,7 @@ from src.services.event_linker import EventLinker
 from src.services.email_notifier import EmailNotifier, NotificationPreferences
 from src.middleware import require_auth, init_auth, init_revocation
 from src.utils.logging import setup_logging, log_request_response, LogContext
+from src.api.investigation_api import register_investigation_api
 
 
 def create_app(db_path: str = 'investigations.db'):
@@ -54,6 +55,13 @@ def create_app(db_path: str = 'investigations.db'):
     app.investigation_store = investigation_store
     app.event_linker = event_linker
     app.email_notifier = email_notifier
+
+    # Register investigation API
+    from src.store.event_store import EventStore
+    event_store = EventStore(db_path=db_path)
+    register_investigation_api(app, investigation_store, event_store)
+
+    
     
     # Register error handlers with logging
     @app.errorhandler(Exception)
@@ -252,11 +260,42 @@ def create_app(db_path: str = 'investigations.db'):
         except Exception:
             pass
 
+    # If a module-level app (with routes) exists, copy its URL rules into
+    # this newly created app so that tests using `create_app()` get the
+    # same routes defined at module import time.
+    try:
+        import sys
+        mod = sys.modules[__name__]
+        global_app = getattr(mod, 'app', None)
+        if global_app is not None and global_app is not app:
+            for rule in list(global_app.url_map.iter_rules()):
+                if rule.endpoint == 'static':
+                    continue
+                view_fn = global_app.view_functions.get(rule.endpoint)
+                methods = [m for m in rule.methods if m not in ('HEAD', 'OPTIONS')]
+                try:
+                    app.add_url_rule(rule.rule, endpoint=rule.endpoint, view_func=view_fn, methods=methods)
+                except Exception:
+                    # ignore failures to re-register; app may already have rule
+                    pass
+    except Exception:
+        pass
+
     return app
 
 
 # Create default app instance
 app = create_app()
+
+# Expose module-level handles for tests that import `src.app` directly
+try:
+    investigation_store = app.investigation_store
+    event_linker = app.event_linker
+    email_notifier = app.email_notifier
+except Exception:
+    investigation_store = None
+    event_linker = None
+    email_notifier = None
 
 
 @app.get('/')
