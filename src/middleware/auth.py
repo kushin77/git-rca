@@ -12,6 +12,7 @@ import functools
 import hashlib
 import json
 import os
+import base64
 from datetime import datetime, timedelta, UTC
 from typing import Dict, Optional, Set
 
@@ -74,15 +75,18 @@ class TokenValidator:
             'exp': int(expiry.timestamp()),
         }
         
-        # Simple signature (in production, use proper JWT library)
+        # Base64-encode payload to avoid spaces in token
         payload_str = json.dumps(payload, sort_keys=True)
+        payload_b64 = base64.urlsafe_b64encode(payload_str.encode()).decode().rstrip('=')
+        
+        # Simple signature (in production, use proper JWT library)
         signature = hashlib.sha256(
             (payload_str + self.secret_key).encode()
         ).hexdigest()[:16]
         
-        token = f"{payload_str}|{signature}"
+        token = f"{payload_b64}.{signature}"
         
-        # Store in whitelist for validation
+        # Store in whitelist for validation (use original payload_str as key)
         self.valid_tokens[token] = payload
         
         return token
@@ -104,12 +108,19 @@ class TokenValidator:
             raise AuthError("Token required")
         
         try:
-            # Split token and signature using pipe separator
-            parts = token.split('|')
+            # Split token and signature using dot separator
+            parts = token.split('.')
             if len(parts) != 2:
                 raise AuthError("Invalid token format")
             
-            payload_str, signature = parts
+            payload_b64, signature = parts
+            
+            # Decode base64 payload (add padding if needed)
+            padding = 4 - (len(payload_b64) % 4)
+            if padding != 4:
+                payload_b64 += '=' * padding
+            
+            payload_str = base64.urlsafe_b64decode(payload_b64).decode()
             payload = json.loads(payload_str)
             
             # Verify signature

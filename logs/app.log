@@ -1,0 +1,114 @@
+{"timestamp": "2026-01-28T15:40:41.031983+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /test", "request_id": "1769614841031", "method": "GET", "path": "/test", "status_code": 200, "latency_ms": 0.05, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:40:41.134820+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /slow", "request_id": "1769614841034", "method": "GET", "path": "/slow", "status_code": 200, "latency_ms": 100.26, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:42:15.049488+00:00", "level": "INFO", "logger": "test_logging", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:42:15.052151+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /test", "request_id": "1769614935052", "method": "GET", "path": "/test", "status_code": 200, "latency_ms": 0.03, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:42:15.154719+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /slow", "request_id": "1769614935053", "method": "GET", "path": "/slow", "status_code": 200, "latency_ms": 100.55, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:43:56.639357+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:43:56.651537+00:00", "level": "INFO", "logger": "src.app", "message": "GET /", "request_id": "1769615036651", "method": "GET", "path": "/", "status_code": 200, "latency_ms": 0.05, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:43:59.235658+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:43:59.243340+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:44:02.317308+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:44:02.423408+00:00", "level": "INFO", "logger": "src.app", "message": "GET /", "request_id": "1769615042423", "method": "GET", "path": "/", "status_code": 200, "latency_ms": 0.02, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:47:27.515157+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:27.624749+00:00", "level": "INFO", "logger": "src.app", "message": "GET /", "request_id": "1769615247624", "method": "GET", "path": "/", "status_code": 200, "latency_ms": 0.08, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:47:27.671093+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.171309+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.179190+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations", "path": "/investigations", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.184540+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.192815+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations", "path": "/investigations", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.197646+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.206097+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations", "path": "/investigations", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.211299+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.220489+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.228857+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.240130+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.245152+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.253201+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.258271+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.268102+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.275681+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.297302+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.302816+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.329837+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.335368+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.343879+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.350638+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.358954+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.370375+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.380295+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.390221+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.400754+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.405528+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.414793+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.419445+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.431481+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.436440+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.445744+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.450354+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.460587+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.465327+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.473131+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.477906+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.486666+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:28.491951+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.499642+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:28.501002+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.509241+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-001", "path": "/api/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.514207+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.524046+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-001", "path": "/api/investigations/inv-001", "method": "PATCH"}
+{"timestamp": "2026-01-28T15:47:28.529061+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.538763+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-001/annotations", "path": "/api/investigations/inv-001/annotations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:28.544026+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.553336+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-001/annotations", "path": "/api/investigations/inv-001/annotations", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.559764+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.569322+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-001/annotations", "path": "/api/investigations/inv-001/annotations", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.571037+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.579743+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.586392+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.596074+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.601620+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.612797+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.621295+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.638624+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.644582+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.655251+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.662875+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.674523+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /investigations/inv-001", "path": "/investigations/inv-001", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:28.679090+00:00", "level": "INFO", "logger": "test_logging", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.679721+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /test", "request_id": "1769615248679", "method": "GET", "path": "/test", "status_code": 200, "latency_ms": 0.03, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:47:28.781782+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /slow", "request_id": "1769615248681", "method": "GET", "path": "/slow", "status_code": 200, "latency_ms": 100.19, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:47:28.898644+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:28.988486+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.061576+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.126594+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.127833+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.132983+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.134017+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.138883+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.139961+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.144811+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.152181+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-494fba28/events/link", "path": "/api/investigations/inv-494fba28/events/link", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.157388+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.158440+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/invalid-id/events/link", "path": "/api/investigations/invalid-id/events/link", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.163391+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.221277+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.222428+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/events/search", "path": "/api/events/search", "method": "GET"}
+{"timestamp": "2026-01-28T15:47:29.228066+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.288878+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.402729+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.412208+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-82e1bbbf/annotations", "path": "/api/investigations/inv-82e1bbbf/annotations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.429832+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.438630+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-80e2295d/annotations", "path": "/api/investigations/inv-80e2295d/annotations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.445129+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.447008+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.453878+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.461843+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations/inv-c1dc996e/events/auto-link", "path": "/api/investigations/inv-c1dc996e/events/auto-link", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:29.467470+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:29.468576+00:00", "level": "WARNING", "logger": "src.app", "message": "Not found: /api/investigations", "path": "/api/investigations", "method": "POST"}
+{"timestamp": "2026-01-28T15:47:32.541985+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:32.552146+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:41.213849+00:00", "level": "INFO", "logger": "src.app", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:41.226592+00:00", "level": "INFO", "logger": "test_logging", "message": "Application started", "log_dir": "logs"}
+{"timestamp": "2026-01-28T15:47:41.229595+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /test", "request_id": "1769615261229", "method": "GET", "path": "/test", "status_code": 200, "latency_ms": 0.04, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:47:41.331996+00:00", "level": "INFO", "logger": "test_logging", "message": "GET /slow", "request_id": "1769615261231", "method": "GET", "path": "/slow", "status_code": 200, "latency_ms": 100.26, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}
+{"timestamp": "2026-01-28T15:47:41.380323+00:00", "level": "INFO", "logger": "src.app", "message": "GET /", "request_id": "1769615261380", "method": "GET", "path": "/", "status_code": 200, "latency_ms": 0.02, "remote_addr": "127.0.0.1", "user_agent": "Werkzeug/3.1.5"}

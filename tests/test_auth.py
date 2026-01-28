@@ -11,6 +11,7 @@ Tests:
 
 import json
 import hashlib
+import base64
 import pytest
 from datetime import datetime, timedelta, UTC
 
@@ -34,7 +35,7 @@ class TestTokenValidator:
         """Test generating a valid token."""
         token = validator.generate_token('user123', 'engineer')
         assert token is not None
-        assert '|' in token  # Should have payload|signature format
+        assert '.' in token  # Should have payload.signature format
     
     def test_generate_token_invalid_role(self, validator):
         """Test generating token with invalid role raises error."""
@@ -77,6 +78,7 @@ class TestTokenValidator:
     def test_token_expires(self, validator):
         """Test that expired tokens are rejected."""
         # Create token that expires in the past (-1 hour)
+        import base64
         
         now = datetime.now(UTC)
         expired_exp = int((now - timedelta(hours=1)).timestamp())
@@ -90,10 +92,11 @@ class TestTokenValidator:
         }
         
         payload_str = json.dumps(payload, sort_keys=True)
+        payload_b64 = base64.urlsafe_b64encode(payload_str.encode()).decode().rstrip('=')
         signature = hashlib.sha256(
             (payload_str + validator.secret_key).encode()
         ).hexdigest()[:16]
-        token = f"{payload_str}|{signature}"
+        token = f"{payload_b64}.{signature}"
         
         # Token should be rejected as expired
         with pytest.raises(AuthError) as exc:
@@ -143,6 +146,7 @@ class TestAuthDecorator:
         from flask import Flask
         app = Flask(__name__)
         app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'test_secret_key_for_auth_tests'
         
         from src.middleware import init_auth
         init_auth(app)
@@ -275,7 +279,7 @@ class TestAuthDebugEndpoint:
     
     def test_get_token_default(self, client):
         """Test getting a token with defaults."""
-        response = client.post('/auth/token')
+        response = client.post('/auth/token', json={})
         assert response.status_code == 200
         data = response.get_json()
         assert 'token' in data

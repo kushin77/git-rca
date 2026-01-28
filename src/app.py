@@ -7,6 +7,7 @@ from src.store.investigation_store import InvestigationStore
 from src.services.event_linker import EventLinker
 from src.services.email_notifier import EmailNotifier, NotificationPreferences
 from src.middleware import require_auth, init_auth
+from src.utils.logging import setup_logging, log_request_response, LogContext
 
 
 def create_app(db_path: str = 'investigations.db'):
@@ -19,6 +20,9 @@ def create_app(db_path: str = 'investigations.db'):
         Configured Flask app instance
     """
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/static')
+
+    # Initialize structured JSON logging
+    setup_logging(app)
 
     # Initialize authentication
     init_auth(app)
@@ -43,6 +47,31 @@ def create_app(db_path: str = 'investigations.db'):
     app.event_linker = event_linker
     app.email_notifier = email_notifier
     
+    # Register error handlers with logging
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        """Log all exceptions and return JSON error response."""
+        context = LogContext(app.logger)
+        context.error(
+            f'Unhandled exception: {type(e).__name__}',
+            error_type=type(e).__name__,
+            error_message=str(e),
+            path=request.path,
+            method=request.method,
+        )
+        return jsonify({'error': 'Internal server error'}), 500
+    
+    @app.errorhandler(404)
+    def handle_404(e):
+        """Log 404 errors."""
+        context = LogContext(app.logger)
+        context.warning(
+            f'Not found: {request.path}',
+            path=request.path,
+            method=request.method,
+        )
+        return jsonify({'error': 'Not found'}), 404
+    
     return app
 
 
@@ -51,7 +80,9 @@ app = create_app()
 
 
 @app.get('/')
+@log_request_response
 def index():
+    """Health check endpoint."""
     return jsonify({"message": "Git RCA Workspace - MVP skeleton"})
 
 
@@ -179,6 +210,7 @@ def investigation_canvas(investigation_id: str):
 
 @app.post('/api/investigations')
 @require_auth(allowed_roles={'admin', 'engineer'})
+@log_request_response
 def create_investigation():
     """Create a new investigation (requires auth)."""
     data = request.json or {}
@@ -197,6 +229,7 @@ def create_investigation():
 
 
 @app.get('/api/investigations/<investigation_id>')
+@log_request_response
 def get_investigation(investigation_id: str):
     """Fetch investigation details (public read)."""
     investigation = app.investigation_store.get_investigation(investigation_id)
@@ -209,6 +242,7 @@ def get_investigation(investigation_id: str):
 
 @app.patch('/api/investigations/<investigation_id>')
 @require_auth(allowed_roles={'admin', 'engineer'})
+@log_request_response
 def update_investigation(investigation_id: str):
     """Update investigation details (requires auth)."""
     data = request.json or {}
@@ -225,6 +259,7 @@ def update_investigation(investigation_id: str):
 
 @app.post('/api/investigations/<investigation_id>/annotations')
 @require_auth(allowed_roles={'admin', 'engineer'})
+@log_request_response
 def add_annotation(investigation_id: str):
     """Add annotation to investigation (requires auth)."""
     data = request.json or {}
@@ -259,6 +294,7 @@ def list_annotations(investigation_id: str):
 
 @app.post('/api/investigations/<investigation_id>/events/auto-link')
 @require_auth(allowed_roles={'admin', 'engineer'})
+@log_request_response
 def auto_link_events(investigation_id: str):
     """Automatically discover and link events to investigation (requires auth).
     
@@ -325,6 +361,7 @@ def get_investigation_events(investigation_id: str):
 
 @app.post('/api/investigations/<investigation_id>/events/link')
 @require_auth(allowed_roles={'admin', 'engineer'})
+@log_request_response
 def link_event(investigation_id: str):
     """Manually link an event to investigation (requires auth)."""
     data = request.json or {}
@@ -405,7 +442,8 @@ def suggest_events(investigation_id: str):
 # Email Notification Routes
 
 @app.post('/api/user/preferences')
-@require_auth(allowed_roles={'admin', 'engineer'})
+@require_auth(allowed_roles={'admin', 'engineer', 'analyst'})
+@log_request_response
 def set_email_preferences():
     """Set email notification preferences for authenticated user.
     
@@ -469,7 +507,8 @@ def get_email_preferences(user_email: str):
 
 
 @app.post('/api/user/preferences/<user_email>')
-@require_auth(allowed_roles={'admin', 'engineer'})
+@require_auth(allowed_roles={'admin', 'engineer', 'analyst'})
+@log_request_response
 def update_email_preferences(user_email: str):
     """Update email notification preferences (requires auth).
     
@@ -510,6 +549,7 @@ def update_email_preferences(user_email: str):
 
 @app.post('/api/unsubscribe/<token>')
 @require_auth()  # Allow any authenticated user to manage their own unsubscribe
+@log_request_response
 def unsubscribe(token: str):
     """Unsubscribe from all email notifications using token.
     
@@ -532,6 +572,7 @@ def unsubscribe(token: str):
 
 @app.post('/api/notifications/test')
 @require_auth(allowed_roles={'admin', 'engineer'})
+@log_request_response
 def send_test_notification():
     """Send a test email notification (requires auth).
     
