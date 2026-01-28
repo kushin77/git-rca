@@ -496,7 +496,7 @@ def add_annotation(investigation_id: str):
     try:
         annotation = app.investigation_store.add_annotation(
             investigation_id=investigation_id,
-            author=request.user_id,  # Use authenticated user ID
+            author=data.get('author', request.user_id),  # Use provided author or authenticated user
             text=data.get('text', ''),
             parent_annotation_id=data.get('parent_annotation_id'),
         )
@@ -867,4 +867,4 @@ def send_test_notification():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8081)))

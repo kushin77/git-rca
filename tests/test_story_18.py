@@ -110,12 +110,13 @@ class TestAutoLinkEventsEndpoint:
 class TestGetInvestigationEventsEndpoint:
     """Test the get investigation events endpoint."""
     
-    def test_get_events_endpoint(self, client):
+    def test_get_events_endpoint(self, client, auth_headers):
         """Test GET /api/investigations/<id>/events endpoint."""
         # Create investigation via the app
         response = client.post(
             '/api/investigations',
             json={'title': 'Test Incident', 'description': 'Test description', 'service': 'test-service', 'severity': 'high'},
+            headers=auth_headers
         )
         inv_id = response.json['id']
         
@@ -140,12 +141,13 @@ class TestGetInvestigationEventsEndpoint:
         assert 'events' in data
         assert 'count' in data
     
-    def test_get_events_filter_by_source(self, client):
+    def test_get_events_filter_by_source(self, client, auth_headers):
         """Test filtering events by source."""
         # Create investigation
         response = client.post(
             '/api/investigations',
             json={'title': 'Test', 'description': 'Test desc', 'service': 'test-svc', 'severity': 'high'},
+            headers=auth_headers
         )
         inv_id = response.json['id']
         
@@ -180,12 +182,13 @@ class TestGetInvestigationEventsEndpoint:
         # Should only have git events
         assert all(evt['source'] == 'git' for evt in data['events'])
     
-    def test_get_events_filter_by_type(self, client):
+    def test_get_events_filter_by_type(self, client, auth_headers):
         """Test filtering events by type."""
         # Create investigation
         response = client.post(
             '/api/investigations',
             json={'title': 'Test', 'description': 'Test desc', 'service': 'test-svc', 'severity': 'high'},
+            headers=auth_headers
         )
         inv_id = response.json['id']
         
@@ -364,12 +367,13 @@ class TestAnnotationThreading:
         data = response.json
         assert data['parent_annotation_id'] == parent.id
     
-    def test_get_annotations_with_threading(self, client):
+    def test_get_annotations_with_threading(self, client, auth_headers):
         """Test getting annotations preserves threading."""
         # Create investigation
         response = client.post(
             '/api/investigations',
             json={'title': 'Test', 'description': 'Test desc', 'service': 'test-svc', 'severity': 'high'},
+            headers=auth_headers
         )
         inv_id = response.json['id']
         
@@ -377,6 +381,7 @@ class TestAnnotationThreading:
         response1 = client.post(
             f'/api/investigations/{inv_id}/annotations',
             json={'author': 'alice@example.com', 'text': 'Observation 1'},
+            headers=auth_headers
         )
         assert response1.status_code == 201
         parent_id = response1.json['id']
@@ -389,6 +394,7 @@ class TestAnnotationThreading:
                 'text': 'Reply to observation 1',
                 'parent_annotation_id': parent_id,
             },
+            headers=auth_headers
         )
         assert response2.status_code == 201
         
@@ -410,8 +416,8 @@ class TestAnnotationThreading:
 class TestStory18Integration:
     """Integration tests for Story #18 features."""
     
-    @patch('src.services.event_linker.git_connector.load_events')
-    @patch('src.services.event_linker.ci_connector.load_events')
+    @patch('src.services.event_linker.git_connector.collect')
+    @patch('src.services.event_linker.ci_connector.collect')
     def test_event_linking_workflow(self, mock_ci, mock_git, client, investigation_store):
         """Test complete event linking workflow."""
         # Create investigation
@@ -450,12 +456,13 @@ class TestStory18Integration:
         data = response.json
         assert data['linked_count'] >= 0  # May be 0 if semantic matching doesn't match
     
-    def test_annotation_comment_thread(self, client):
+    def test_annotation_comment_thread(self, client, auth_headers):
         """Test creating and retrieving annotation threads."""
         # Create investigation
         response = client.post(
             '/api/investigations',
             json={'title': 'Service Outage', 'status': 'open'},
+            headers=auth_headers
         )
         inv_id = response.json['id']
         
@@ -463,6 +470,7 @@ class TestStory18Integration:
         response1 = client.post(
             f'/api/investigations/{inv_id}/annotations',
             json={'author': 'engineer1', 'text': 'What happened?'},
+            headers=auth_headers
         )
         assert response1.status_code == 201
         parent_id = response1.json['id']
@@ -475,6 +483,7 @@ class TestStory18Integration:
                 'text': 'Database went down',
                 'parent_annotation_id': parent_id,
             },
+            headers=auth_headers
         )
         assert response2.status_code == 201
         
