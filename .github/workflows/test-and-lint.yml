@@ -1,0 +1,46 @@
+name: Test, Lint & Secrets Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install pytest coverage flake8 || true
+
+      - name: Secrets scan (truffleHog)
+        uses: trufflesecurity/trufflehog-action@v0.3.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint (flake8)
+        run: |
+          flake8 . --max-line-length=100 || exit 1
+
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest -q
+          coverage report --fail-under=80
+
+      - name: Upload coverage (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml || coverage_report.txt || ./htmlcov
