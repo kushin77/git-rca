@@ -182,7 +182,106 @@ All systems should follow these enterprise patterns:
 - Security findings are critical path
 - Documentation is part of the definition of done
 - Architectural decisions are tracked and reviewed quarterly
-- 
+- All issues must reference problem + solution (not just title)
+- All commits must reference a GitHub issue (#123)
+- All pull requests must include acceptance criteria
+- All PRs must have test coverage >80% for production code
+
+---
+
+## Issue & PR Management Standards
+
+### Creating Issues
+
+1. **Use Templates**: Always use appropriate template (epic.md, story.md, bug.md)
+2. **Clear Problem Statement**: Describe what problem you're solving
+3. **Acceptance Criteria**: Define "done" explicitly
+4. **Estimation**: Provide time/story point estimate
+5. **Priority**: Mark as P0/P1/P2 (P0=blocking, P1=high, P2=medium)
+6. **Dependencies**: List blocking/blocked-by issues
+7. **Labels**: Use standard labels: p0, p1, p2, security, ci, core, data, ux, etc.
+
+### Commit Messages
+
+All commits must:
+1. Reference an issue: `#123` format
+2. Use conventional commits: `type: #123 description`
+3. Include body explaining change
+4. Avoid generic messages ("fix stuff", "updates", etc.)
+
+**Example**:
+```
+feat: #38 implement investigation canvas UI prototype
+
+- Add React component for canvas visualization
+- Implement drag-drop for nodes/edges
+- Add event timeline rendering
+- Tests: canvas model with 95% coverage
+```
+
+### Pull Requests
+
+All PRs must:
+1. Link to issue: `Closes #123` in body
+2. Include acceptance criteria checklist
+3. Show test coverage (>80% required)
+4. Pass all automated checks
+5. Have at least 1 approval from senior engineer
+
+### Issue Triage
+
+Issues are triaged into phases:
+- **P0 (Blocking)**: Must complete before production launch
+- **P1 (High)**: Core features required for MVP
+- **P2 (Medium)**: Enhancements, can defer to later phase
+- **P3 (Low)**: Nice-to-have, backlog
+
+See [ISSUES_TRIAGE_SUMMARY.md](ISSUES_TRIAGE_SUMMARY.md) for current status.
+
+### Issue Resolution
+
+When closing an issue:
+1. Verify all acceptance criteria met
+2. Link implementation commits
+3. Run full test suite (>80% coverage)
+4. Update documentation
+5. Add closure comment with summary
+6. Move to Done column in project board
+
+---
+
+## Key Documents
+
+### Planning & Tracking
+- [ISSUES_TRIAGE_SUMMARY.md](ISSUES_TRIAGE_SUMMARY.md) - Current issue status & resolution plan
+- [PROJECT_BOARD.md](PROJECT_BOARD.md) - MVP project board with swimlanes & timeline
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Developer workflow and environment setup
+
+### Security & Compliance
+- [docs/code_audit_findings.md](docs/code_audit_findings.md) - P0 security issues & fixes
+- [docs/security_threat_model.md](docs/security_threat_model.md) - Threat model & risk assessment
+- [docs/SECRETS_SCANNING.md](docs/SECRETS_SCANNING.md) - Secrets scanning results
+
+### Operations
+- [docs/runbook.md](docs/runbook.md) - On-call procedures & escalation
+- [docs/ONBOARDING.md](docs/ONBOARDING.md) - Dev environment setup
+- [.github/workflows/](docs) - CI/CD pipelines
+
+---
+
+## Current Project Status
+
+**Phase**: 3e (Security Hardening & Observability)  
+**Open Issues**: 14  
+**P0 Issues**: 2 (#37 CI/CD, #40 Security)  
+**P1 Issues**: 4 (#38 UI, #39 API, #46 Connectors, #49 Hardening)  
+**P2 Issues**: 8 (#28-#34 Infrastructure)
+
+**Next Milestone**: Complete P0 issues, then execute P1 features
+
+See [ISSUES_TRIAGE_SUMMARY.md](ISSUES_TRIAGE_SUMMARY.md) for full details.
+
+---
 
 ## Success Metrics
 
@@ -193,10 +292,10 @@ All systems should follow these enterprise patterns:
 - 0 days to patch critical security issues
 - 100% of code reviewed by senior engineers
 - Measurable performance improvements each quarter
-- 
+- 100% issue triage & tracking compliance
 
 ---
 
 **This document is the source of truth for all Copilot-assisted development in the git@github.com:kushin77/git-rca-workspace.git repository.**
 
-Last updated: 2026-01-27
+Last updated: 2026-01-28
