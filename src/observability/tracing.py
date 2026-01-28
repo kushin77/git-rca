@@ -15,7 +15,7 @@ Key Responsibilities:
 
 from typing import Optional, Dict, Any, Callable, TypeVar
 from functools import wraps
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 from contextlib import contextmanager
 
@@ -46,7 +46,7 @@ class MockSpan:
         self.name = name
         self.attributes = attributes or {}
         self.events = []
-        self.start_time = datetime.utcnow()
+        self.start_time = datetime.now(timezone.utc)
         self.end_time = None
         self.status = "UNSET"
         self.exception = None
@@ -64,7 +64,7 @@ class MockSpan:
             {
                 "name": name,
                 "attributes": attributes or {},
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(timezone.utc),
             }
         )
         return self
@@ -89,7 +89,7 @@ class MockSpan:
 
     def end(self) -> None:
         """End the span."""
-        self.end_time = datetime.utcnow()
+        self.end_time = datetime.now(timezone.utc)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert span to dictionary for inspection."""

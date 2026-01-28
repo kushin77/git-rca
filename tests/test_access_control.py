@@ -11,7 +11,7 @@ Comprehensive test suite for role-based access control, including:
 """
 
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from src.services.access_control import (
     AccessControl,
     Role,
@@ -176,7 +176,7 @@ class TestAssignRole:
 
     def test_assign_role_with_expiration(self, access_control, admin_user):
         """Test assigning role with expiration time."""
-        expires_at = datetime.utcnow() + timedelta(hours=1)
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
 
         assignment = access_control.assign_role(
             user_id="user-1",
@@ -232,7 +232,7 @@ class TestPermissionChecks:
 
     def test_check_permission_with_expired_role(self, access_control, admin_user):
         """Test permission check with expired role."""
-        expires_at = datetime.utcnow() - timedelta(hours=1)  # Already expired
+        expires_at = datetime.now(timezone.utc) - timedelta(hours=1)  # Already expired
 
         access_control.assign_role(
             user_id="user-1",

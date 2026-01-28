@@ -16,7 +16,7 @@ Key Responsibilities:
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Set, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 
 
@@ -203,7 +203,10 @@ class AccessControl:
                 continue
 
             # Check if assignment has expired
-            if assignment.expires_at and datetime.utcnow() > assignment.expires_at:
+            if (
+                assignment.expires_at
+                and datetime.now(timezone.utc) > assignment.expires_at
+            ):
                 assignment.is_active = False
                 continue
 
@@ -255,7 +258,7 @@ class AccessControl:
             user_id=user_id,
             role=role,
             resource_id=resource_id,
-            assigned_at=datetime.utcnow(),
+            assigned_at=datetime.now(timezone.utc),
             assigned_by=assigned_by,
             expires_at=expires_at,
         )
@@ -324,7 +327,10 @@ class AccessControl:
             if not assignment.is_active:
                 continue
 
-            if assignment.expires_at and datetime.utcnow() > assignment.expires_at:
+            if (
+                assignment.expires_at
+                and datetime.now(timezone.utc) > assignment.expires_at
+            ):
                 continue
 
             resource = assignment.resource_id or "global"
@@ -354,7 +360,8 @@ class AccessControl:
         active_roles = [
             (a.role, a.resource_id)
             for a in assignments
-            if a.is_active and (not a.expires_at or datetime.utcnow() <= a.expires_at)
+            if a.is_active
+            and (not a.expires_at or datetime.now(timezone.utc) <= a.expires_at)
         ]
         return active_roles
 

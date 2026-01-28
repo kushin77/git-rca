@@ -8,7 +8,7 @@ architecture for investigation canvas operations.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Set
 from enum import Enum
 import uuid
@@ -79,7 +79,7 @@ class CanvasChangeEvent:
             canvas_id=data.get("canvas_id", ""),
             user_id=data.get("user_id", ""),
             timestamp=datetime.fromisoformat(
-                data.get("timestamp", datetime.utcnow().isoformat())
+                data.get("timestamp", datetime.now(timezone.utc).isoformat())
             ),
             data=data.get("data", {}),
             metadata=data.get("metadata", {}),

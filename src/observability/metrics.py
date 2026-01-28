@@ -12,7 +12,7 @@ Key Responsibilities:
 """
 
 from typing import Dict, Optional, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 import time
 
@@ -30,7 +30,7 @@ class MetricPoint:
         self.name = name
         self.value = value
         self.labels = labels or {}
-        self.timestamp = timestamp or datetime.utcnow()
+        self.timestamp = timestamp or datetime.now(timezone.utc)
 
     def to_prometheus_format(self) -> str:
         """Convert to Prometheus exposition format."""

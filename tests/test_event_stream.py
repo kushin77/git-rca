@@ -6,7 +6,7 @@ Comprehensive test suite for event streaming and pub/sub functionality.
 """
 
 import pytest
-from datetime import datetime
+from datetime import datetime, timezone
 from src.services.event_stream import (
     CanvasChangeEvent,
     EventStream,
@@ -79,7 +79,7 @@ class TestCanvasChangeEvent:
             "event_type": "edge_added",
             "canvas_id": "canvas-1",
             "user_id": "user-1",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "data": {"edge_id": "e1"},
             "metadata": {"source": "api"},
         }

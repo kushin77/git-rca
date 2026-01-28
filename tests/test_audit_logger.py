@@ -11,7 +11,7 @@ Comprehensive test suite for audit logging, including:
 """
 
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from src.services.audit_logger import (
     AuditLogger,
     AuditEntry,
@@ -34,7 +34,7 @@ class TestAuditEntry:
         """Test creating an audit entry."""
         entry = AuditEntry(
             entry_id="entry-1",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             user_id="user-123",
             operation_type=OperationType.CREATE,
             resource_type=ResourceType.CANVAS,
@@ -201,7 +201,7 @@ class TestAuditLoggerRetrieval:
 
     def test_get_user_activity_with_date_range(self, audit_logger):
         """Test retrieving user activity within date range."""
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         past = now - timedelta(days=1)
         future = now + timedelta(days=1)
 

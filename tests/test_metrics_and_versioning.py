@@ -7,7 +7,7 @@ and canvas version management.
 """
 
 import pytest
-from datetime import datetime
+from datetime import datetime, timezone
 from src.observability.metrics import (
     Counter,
     Histogram,
@@ -274,7 +274,7 @@ class TestCanvasVersion:
             "data": {},
             "changes": [],
             "author": "user-1",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "message": "Test",
         }
 

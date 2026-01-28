@@ -14,7 +14,7 @@ Key Responsibilities:
 """
 
 from dataclasses import dataclass, asdict
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List, Optional, Any
 from uuid import uuid4
@@ -150,7 +150,7 @@ class AuditLogger:
         """
         entry = AuditEntry(
             entry_id=str(uuid4()),
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             user_id=user_id,
             operation_type=operation_type,
             resource_type=resource_type,
