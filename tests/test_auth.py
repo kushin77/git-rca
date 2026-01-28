@@ -12,7 +12,7 @@ Tests:
 import json
 import hashlib
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 from src.middleware.auth import (
     TokenValidator,
@@ -77,9 +77,8 @@ class TestTokenValidator:
     def test_token_expires(self, validator):
         """Test that expired tokens are rejected."""
         # Create token that expires in the past (-1 hour)
-        from datetime import datetime, timedelta
         
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         expired_exp = int((now - timedelta(hours=1)).timestamp())
         
         # Manually create an expired token

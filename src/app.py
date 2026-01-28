@@ -6,6 +6,7 @@ from src.store import sql_store
 from src.store.investigation_store import InvestigationStore
 from src.services.event_linker import EventLinker
 from src.services.email_notifier import EmailNotifier, NotificationPreferences
+from src.middleware import require_auth, init_auth
 
 
 def create_app(db_path: str = 'investigations.db'):
@@ -18,6 +19,9 @@ def create_app(db_path: str = 'investigations.db'):
         Configured Flask app instance
     """
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/static')
+
+    # Initialize authentication
+    init_auth(app)
 
     # Initialize investigation store
     investigation_store = InvestigationStore(db_path=db_path)
@@ -173,8 +177,9 @@ def investigation_canvas(investigation_id: str):
 
 
 @app.post('/api/investigations')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def create_investigation():
-    """Create a new investigation."""
+    """Create a new investigation (requires auth)."""
     data = request.json or {}
     
     try:
@@ -192,7 +197,7 @@ def create_investigation():
 
 @app.get('/api/investigations/<investigation_id>')
 def get_investigation(investigation_id: str):
-    """Fetch investigation details."""
+    """Fetch investigation details (public read)."""
     investigation = app.investigation_store.get_investigation(investigation_id)
     
     if not investigation:
@@ -202,8 +207,9 @@ def get_investigation(investigation_id: str):
 
 
 @app.patch('/api/investigations/<investigation_id>')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def update_investigation(investigation_id: str):
-    """Update investigation details."""
+    """Update investigation details (requires auth)."""
     data = request.json or {}
     
     try:
@@ -217,14 +223,15 @@ def update_investigation(investigation_id: str):
 
 
 @app.post('/api/investigations/<investigation_id>/annotations')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def add_annotation(investigation_id: str):
-    """Add annotation to investigation."""
+    """Add annotation to investigation (requires auth)."""
     data = request.json or {}
     
     try:
         annotation = app.investigation_store.add_annotation(
             investigation_id=investigation_id,
-            author=data.get('author', 'Unknown'),
+            author=request.user_id,  # Use authenticated user ID
             text=data.get('text', ''),
             parent_annotation_id=data.get('parent_annotation_id'),
         )
@@ -235,7 +242,7 @@ def add_annotation(investigation_id: str):
 
 @app.get('/api/investigations/<investigation_id>/annotations')
 def list_annotations(investigation_id: str):
-    """List annotations for investigation."""
+    """List annotations for investigation (public read)."""
     try:
         annotations = app.investigation_store.get_annotations(investigation_id)
         return jsonify({
@@ -250,8 +257,9 @@ def list_annotations(investigation_id: str):
 # Event Linking Routes
 
 @app.post('/api/investigations/<investigation_id>/events/auto-link')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def auto_link_events(investigation_id: str):
-    """Automatically discover and link events to investigation.
+    """Automatically discover and link events to investigation (requires auth).
     
     Query params:
       - time_window_minutes: int (default 60)
@@ -283,7 +291,7 @@ def auto_link_events(investigation_id: str):
 
 @app.get('/api/investigations/<investigation_id>/events')
 def get_investigation_events(investigation_id: str):
-    """Get all linked events for investigation.
+    """Get all linked events for investigation (public read).
     
     Query params:
       - source: 'git' | 'ci' (omit for all)
@@ -315,8 +323,9 @@ def get_investigation_events(investigation_id: str):
 
 
 @app.post('/api/investigations/<investigation_id>/events/link')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def link_event(investigation_id: str):
-    """Manually link an event to investigation."""
+    """Manually link an event to investigation (requires auth)."""
     data = request.json or {}
     
     try:
@@ -395,8 +404,9 @@ def suggest_events(investigation_id: str):
 # Email Notification Routes
 
 @app.post('/api/user/preferences')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def set_email_preferences():
-    """Set email notification preferences for a user.
+    """Set email notification preferences for authenticated user.
     
     Request body:
     {
@@ -458,8 +468,9 @@ def get_email_preferences(user_email: str):
 
 
 @app.post('/api/user/preferences/<user_email>')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def update_email_preferences(user_email: str):
-    """Update email notification preferences for a user.
+    """Update email notification preferences (requires auth).
     
     Request body (partial update):
     {
@@ -497,6 +508,7 @@ def update_email_preferences(user_email: str):
 
 
 @app.post('/api/unsubscribe/<token>')
+@require_auth()  # Allow any authenticated user to manage their own unsubscribe
 def unsubscribe(token: str):
     """Unsubscribe from all email notifications using token.
     
@@ -518,8 +530,9 @@ def unsubscribe(token: str):
 
 
 @app.post('/api/notifications/test')
+@require_auth(allowed_roles={'admin', 'engineer'})
 def send_test_notification():
-    """Send a test email notification.
+    """Send a test email notification (requires auth).
     
     Request body:
     {

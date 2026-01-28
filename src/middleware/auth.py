@@ -12,7 +12,7 @@ import functools
 import hashlib
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Dict, Optional, Set
 
 from flask import current_app, request, jsonify
@@ -62,7 +62,7 @@ class TokenValidator:
         if role not in ('admin', 'engineer', 'viewer'):
             raise ValueError(f"Invalid role: {role}")
         
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         expiry = now + timedelta(hours=expires_in_hours)
         
         # Create token payload using timestamps instead of ISO format
@@ -125,7 +125,7 @@ class TokenValidator:
             if not isinstance(exp_timestamp, int):
                 raise AuthError("Invalid expiration time")
             
-            current_timestamp = int(datetime.utcnow().timestamp())
+            current_timestamp = int(datetime.now(UTC).timestamp())
             if current_timestamp > exp_timestamp:
                 raise AuthError("Token expired")
             
