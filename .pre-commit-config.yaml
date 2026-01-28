@@ -33,26 +33,80 @@ repos:
     rev: v3.63.0
     hooks:
       - id: trufflehog
-        name: TruffleHog
-        description: Detect secrets in staged files
-        entry: trufflehog filesystem --only-verified
+        name: TruffleHog Secrets Scan
+        description: Detect verified secrets in staged files
+        entry: trufflehog filesystem --only-verified --entropy=False
         language: python
-        types: [python]
+        types: [python, yaml, json, text]
+        stages: [commit]
+        exclude: |
+          (?x)^(
+            \.env\.example|
+            tests/.*|
+            docs/.*
+          )$
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: Detect Secrets (High-Entropy)
+        description: Detects high-entropy strings and known secret patterns
+        entry: detect-secrets scan --baseline .secrets.baseline
+        language: python
+        additional_dependencies: ['detect-secrets']
+        types: [python, yaml, json, text]
+        exclude: |
+          (?x)^(
+            \.secrets\.baseline|
+            \.env\.example|
+            tests/.*|
+            docs/.*
+          )$
         stages: [commit]
 
   - repo: local
     hooks:
+      - id: detect-api-keys
+        name: Detect API Keys and Tokens
+        description: Scans for exposed API keys, tokens, and credentials
+        entry: python3 .git-hooks/detect-api-keys.py
+        language: script
+        types: [python, yaml, json, text]
+        exclude: |
+          (?x)^(
+            \.env\.example|
+            tests/.*|
+            docs/.*|
+            \.secrets\.baseline
+          )$
+        stages: [commit]
+
+      - id: detect-database-urls
+        name: Detect Database URLs
+        description: Scans for exposed database connection strings
+        entry: python3 .git-hooks/detect-db-urls.py
+        language: script
+        types: [python, yaml, json, text]
+        exclude: |
+          (?x)^(
+            \.env\.example|
+            tests/.*|
+            docs/.*
+          )$
+        stages: [commit]
+
       - id: check-no-venv
         name: Check no .venv in commit
-        entry: bash -c 'if git diff --cached --name-only | grep -E "\.venv/|\.env\.local"; then echo "ERROR: .venv or .env.local found in staged files"; exit 1; fi'
-        language: system
+        entry: python3 .git-hooks/check-venv.py
+        language: script
         stages: [commit]
         always_run: true
 
       - id: check-no-egg-info
         name: Check no egg-info in commit
-        entry: bash -c 'if git diff --cached --name-only | grep -E "\.egg-info/|\.eggs/"; then echo "ERROR: egg-info found in staged files"; exit 1; fi'
-        language: system
+        entry: python3 .git-hooks/check-egg-info.py
+        language: script
         stages: [commit]
         always_run: true
 
