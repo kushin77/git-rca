@@ -242,6 +242,16 @@ def create_app(db_path: str = 'investigations.db'):
             )
             return jsonify({'error': 'Failed to get stats', 'details': str(e)}), 500
     
+    # Initialize observability (best-effort). Failures won't stop the app.
+    try:
+        from .observability.init_observability import init_observability
+        init_observability(app)
+    except Exception:
+        try:
+            app.logger.debug("Observability initialization skipped or failed")
+        except Exception:
+            pass
+
     return app
 
 
